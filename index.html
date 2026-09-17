@@ -1817,18 +1817,21 @@
                         return false;
                     }
 
-                    const payload = {
-                        app: 'VRAISE EduHub',
-                        action: data.action || 'activity',
-                        sessionId: this.sessionId || this.generateSessionId(),
-                        studentId: this.studentId || '',
-                        nama: this.studentName || '',
-                        kelas: this.studentClass || '',
-                        aktiviti: data.aktiviti || '',
-                        langkah: data.langkah ?? this.missionStep ?? '',
-                        skor: data.skor ?? '',
-                        jumlahSoalan: data.jumlahSoalan ?? '',
-                        nilai: data.nilai ?? '',
+                   const payload = {
+    app: 'VRAISE EduHub',
+    action: data.action || 'activity',
+
+    sessionId: data.sessionId || this.sessionId || this.generateSessionId(),
+    studentId: data.studentId || this.studentId || '',
+    studentName: data.studentName || data.nama || this.studentName || '',
+    nama: data.nama || data.studentName || this.studentName || '',
+    kelas: data.kelas || this.studentClass || '',
+
+    aktiviti: data.aktiviti || '',
+    langkah: data.langkah ?? this.missionStep ?? '',
+    skor: data.skor ?? '',
+    jumlahSoalan: data.jumlahSoalan ?? '',
+    nilai: data.nilai ?? '',
                         kemajuan: this.calculateMissionProgress(),
                         catatan: data.catatan || '',
                         pautan: data.pautan || '',
@@ -2073,13 +2076,15 @@
                     this.preTestSubmitted = true;
                     this.safeStorageSet('vraise_preScore', String(score));
                     this.saveProgress();
-                    this.logAktiviti('UJIAN_PRA', {
-                        langkah: 1,
-                        skor,
-                        jumlahSoalan: this.preTestQuestions.length,
-                        nilai: `${score}/${this.preTestQuestions.length}`,
-                        jawapan: JSON.stringify(this.preTestAnswers)
-                    });
+                    this.hantarKeGoogleSheet({
+    action: 'assessment',
+    aktiviti: 'UJIAN_PRA',
+    langkah: 1,
+    skor: score,
+    jumlah: this.preTestQuestions.length,
+    jumlahSoalan: this.preTestQuestions.length,
+    jawapan: this.preTestAnswers
+});
                 },
 
                 submitQuiz() {
@@ -2115,14 +2120,18 @@
                     this.postTestScore = score;
                     this.postTestSubmitted = true;
                     this.saveProgress();
-                    this.logAktiviti('UJIAN_PASCA', {
-                        langkah: 8,
-                        skor,
-                        jumlahSoalan: this.postTestQuestions.length,
-                        nilai: `${score}/${this.postTestQuestions.length}`,
-                        catatan: `Peningkatan skor: ${score - this.preTestScore}`,
-                        jawapan: JSON.stringify(this.postTestAnswers)
-                    });
+
+this.hantarKeGoogleSheet({
+    action: 'assessment',
+    aktiviti: 'UJIAN_PASCA',
+    langkah: 8,
+    skor: score,
+    jumlah: this.postTestQuestions.length,
+    jumlahSoalan: this.postTestQuestions.length,
+    nilai: `${score}/${this.postTestQuestions.length}`,
+    catatan: `Peningkatan skor: ${score - this.preTestScore}`,
+    jawapan: this.postTestAnswers
+});         
                 },
 
                 formatLearningGain() {
