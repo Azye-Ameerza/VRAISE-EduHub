@@ -1647,7 +1647,9 @@
                     if (this.isGoogleSheetConfigured()) this.loadGalleryData(false);
 
                     // Restore saved progress safely. LocalStorage can be unavailable in some preview/sandbox modes.
-                    const saved = this.safeStorageGet('vraise_progress');
+                   const saved = this.studentId
+    ? this.safeStorageGet(`vraise_progress_${this.studentId}`)
+    : null;
                     if (saved) {
                         try {
                             const data = JSON.parse(saved);
@@ -1674,13 +1676,7 @@
                         } catch (error) {
                             console.warn('VRAISE: kemajuan tersimpan tidak dapat dipulihkan.', error);
                         }
-                    } else {
-                        // Backward compatibility with the earlier legacy key.
-                        const savedPreScore = this.safeStorageGet('vraise_preScore');
-                        if (savedPreScore !== null) {
-                            this.preTestScore = Number(savedPreScore) || 0;
-                            this.preTestSubmitted = true;
-                        }
+                   
                     }
 
                     this.$watch('currentView', (value) => {
@@ -1736,22 +1732,94 @@
                     this.profileModalOpen = true;
                 },
 
-                selectStudentById(updateStorage = false) {
-                    const selected = this.studentRoster.find(student => student.id === this.studentId);
-                    if (!selected) {
-                        this.studentName = '';
-                        this.studentClass = '5 Prihatin';
-                        return;
-                    }
-                    this.studentName = selected.name;
-                    this.studentClass = selected.kelas;
-                    if (updateStorage) {
-                        this.safeStorageSet('vraise_student_id', this.studentId);
-                        this.safeStorageSet('vraise_student_name', this.studentName);
-                        this.safeStorageSet('vraise_student_class', this.studentClass);
-                    }
-                },
+              selectStudentById(updateStorage = false) {
+    const selected = this.studentRoster.find(
+        student => student.id === this.studentId
+    );
 
+    if (!selected) {
+        this.studentName = '';
+        this.studentClass = '5 Prihatin';
+        return;
+    }
+
+    this.studentName = selected.name;
+    this.studentClass = selected.kelas;
+
+    if (updateStorage) {
+        this.safeStorageSet('vraise_student_id', this.studentId);
+        this.safeStorageSet('vraise_student_name', this.studentName);
+        this.safeStorageSet('vraise_student_class', this.studentClass);
+    }
+
+    // Kosongkan progress murid sebelumnya
+    this.preTestAnswers = {};
+    this.preTestSubmitted = false;
+    this.preTestScore = 0;
+
+    this.quizAnswers = {};
+    this.quizSubmitted = false;
+    this.quizScore = 0;
+
+    this.postTestAnswers = {};
+    this.postTestSubmitted = false;
+    this.postTestScore = 0;
+
+    this.vrExplored = false;
+    this.novaInteracted = false;
+    this.gameLevel = 1;
+
+    this.creationSubmitted = false;
+    this.reflectionAnswers = { q1: '', q2: '', q3: '' };
+    this.reflectionSaved = false;
+    this.missionCompleted = false;
+
+    // Ambil progress KHAS untuk murid yang dipilih
+    const saved = this.safeStorageGet(
+        `vraise_progress_${this.studentId}`
+    );
+
+    if (saved) {
+        try {
+            const data = JSON.parse(saved);
+
+            this.preTestAnswers = data.preTestAnswers || {};
+            this.preTestSubmitted = Boolean(data.preTestSubmitted);
+            this.preTestScore = Number(data.preTestScore || 0);
+
+            this.quizAnswers = data.quizAnswers || {};
+            this.quizSubmitted = Boolean(data.quizSubmitted);
+            this.quizScore = Number(data.quizScore || 0);
+
+            this.postTestAnswers = data.postTestAnswers || {};
+            this.postTestSubmitted = Boolean(data.postTestSubmitted);
+            this.postTestScore = Number(data.postTestScore || 0);
+
+            this.vrExplored = Boolean(data.vrExplored);
+            this.novaInteracted = Boolean(data.novaInteracted);
+            this.gameLevel = Number(data.gameLevel || 1);
+
+            this.creationSubmitted =
+                Boolean(data.creationSubmitted);
+
+            this.reflectionAnswers =
+                data.reflectionAnswers ||
+                { q1: '', q2: '', q3: '' };
+
+            this.reflectionSaved =
+                Boolean(data.reflectionSaved);
+
+            this.missionCompleted =
+                Boolean(data.missionCompleted);
+
+        } catch (error) {
+            console.warn(
+                'VRAISE: progress murid tidak dapat dimuatkan.',
+                error
+            );
+        }
+    }
+},
                 saveStudentProfile() {
                     this.selectStudentById();
                     if (!String(this.studentId || '').trim() || !String(this.studentName || '').trim()) {
@@ -2012,8 +2080,10 @@
                         reflectionSaved: this.reflectionSaved,
                         missionCompleted: this.missionCompleted
                     };
-                    this.safeStorageSet('vraise_progress', JSON.stringify(data));
-                },
+                  this.safeStorageSet(
+  `vraise_progress_${this.studentId}`,
+  JSON.stringify(data)
+);
 
                 startFeaturedMission(step = 1) {
                     const normalizedStep = Math.min(9, Math.max(1, Number(step) || 1));
@@ -2074,7 +2144,10 @@
                     });
                     this.preTestScore = score;
                     this.preTestSubmitted = true;
-                    this.safeStorageSet('vraise_preScore', String(score));
+                    this.safeStorageSet(
+  `vraise_preScore_${this.studentId}`,
+  String(score)
+);
                     this.saveProgress();
                     this.hantarKeGoogleSheet({
     action: 'assessment',
