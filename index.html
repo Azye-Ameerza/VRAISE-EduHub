@@ -1689,6 +1689,7 @@
 
                 // Helper Methods
                 initApp() {
+                        this.loadDashboardData();
                     this.studentId = this.safeStorageGet('vraise_student_id') || '';
                     this.studentName = this.safeStorageGet('vraise_student_name') || '';
                     this.studentClass = '5 Prihatin';
