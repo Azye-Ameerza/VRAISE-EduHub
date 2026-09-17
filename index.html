@@ -1171,26 +1171,78 @@
 </div>
 <!-- Metric Cards -->
 <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-<div class="glass-card p-5 rounded-2xl border border-white/10 space-y-1">
-<span class="text-[10px] text-snow/60 uppercase font-semibold">Pengguna Berdaftar</span>
-<div class="text-2xl font-bold text-cyan-glow">33</div>
-<span class="text-[10px] text-cyan-glow">Kelas 5 Prihatin</span>
-</div>
-<div class="glass-card p-5 rounded-2xl border border-white/10 space-y-1">
-<div class="text-[10px] text-snow/60 uppercase font-semibold">Kadar Penyelesaian VR</div>
-<div class="text-xl font-bold text-electric">Belum Direkod</div>
-<span class="text-[10px] text-electric">Menunggu penggunaan murid</span>
-</div>
-<div class="glass-card p-5 rounded-2xl border border-white/10 space-y-1">
-<div class="text-[10px] text-snow/60 uppercase font-semibold">Purata Ujian Pra</div>
-<div class="text-xl font-bold text-snow">Belum Direkod</div>
-<span class="text-[10px] text-snow/50">Akan dikira daripada 33 murid</span>
-</div>
-<div class="glass-card p-5 rounded-2xl border border-cyan-glow/40 bg-cyan-glow/10 space-y-1">
-<div class="text-[10px] text-cyan-glow uppercase font-bold">Purata Ujian Pasca</div>
-<div class="text-xl font-bold text-cyan-glow">Belum Direkod</div>
-<span class="text-[10px] text-cyan-glow">Learning Gain akan dikira automatik</span>
-</div>
+
+  <!-- Pengguna Berdaftar -->
+  <div class="glass-card p-5 rounded-2xl border border-white/10 space-y-1">
+    <span class="text-[10px] text-snow/60 uppercase font-semibold">
+      Pengguna Berdaftar
+    </span>
+
+    <div class="text-2xl font-bold text-cyan-glow"
+         x-text="dashboardData?.jumlahPengguna ?? 33">
+      33
+    </div>
+
+    <span class="text-[10px] text-cyan-glow">
+      Kelas 5 Prihatin
+    </span>
+  </div>
+
+
+  <!-- Kadar Penyelesaian -->
+  <div class="glass-card p-5 rounded-2xl border border-white/10 space-y-1">
+    <div class="text-[10px] text-snow/60 uppercase font-semibold">
+      Kadar Penyelesaian
+    </div>
+
+    <div class="text-xl font-bold text-electric"
+         x-text="dashboardData ? dashboardData.kadarPenyelesaian + '%' : 'Belum Direkod'">
+      Belum Direkod
+    </div>
+
+    <span class="text-[10px] text-electric">
+      Berdasarkan misi lengkap murid
+    </span>
+  </div>
+
+
+  <!-- Purata Ujian Pra -->
+  <div class="glass-card p-5 rounded-2xl border border-white/10 space-y-1">
+    <div class="text-[10px] text-snow/60 uppercase font-semibold">
+      Purata Ujian Pra
+    </div>
+
+    <div class="text-xl font-bold text-snow"
+         x-text="dashboardData && dashboardData.purataUjianPra !== null
+           ? dashboardData.purataUjianPra.toFixed(2) + '/5'
+           : 'Belum Direkod'">
+      Belum Direkod
+    </div>
+
+    <span class="text-[10px] text-snow/50">
+      Data sebenar murid 5 Prihatin
+    </span>
+  </div>
+
+
+  <!-- Purata Ujian Pasca -->
+  <div class="glass-card p-5 rounded-2xl border border-cyan-glow/40 bg-cyan-glow/10 space-y-1">
+    <div class="text-[10px] text-cyan-glow uppercase font-bold">
+      Purata Ujian Pasca
+    </div>
+
+    <div class="text-xl font-bold text-cyan-glow"
+         x-text="dashboardData && dashboardData.purataUjianPasca !== null
+           ? dashboardData.purataUjianPasca.toFixed(2) + '/5'
+           : 'Belum Direkod'">
+      Belum Direkod
+    </div>
+
+    <span class="text-[10px] text-cyan-glow">
+      Learning Gain dikira automatik
+    </span>
+  </div>
+
 </div>
 <!-- Analytics Chart Block -->
 <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
