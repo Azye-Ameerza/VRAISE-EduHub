@@ -1,0 +1,2374 @@
+<!DOCTYPE html>
+
+<html class="dark scroll-smooth" lang="ms" style="background:#030712 !important;">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>VRAISE EduHub - Melangkaui Pembelajaran. Menuju Pengalaman.</title>
+<!-- VRAISE FINAL GEMINI + GOOGLE DRIVE LINK INTEGRATION | 2026-09-17 -->
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        navy: {
+                            base: '#06111E',
+                            deep: '#0D2035',
+                            card: 'rgba(13, 32, 53, 0.75)',
+                        },
+                        cyan: {
+                            glow: '#5DF2E4',
+                        },
+                        electric: '#5AA9FF',
+                        violet: '#B48CFF',
+                        snow: '#F5FBFF',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'Space Grotesk', 'sans-serif'],
+                        heading: ['Space Grotesk', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'glow-cyan': '0 0 20px -3px rgba(93, 242, 228, 0.4)',
+                        'glow-violet': '0 0 20px -3px rgba(180, 140, 255, 0.4)',
+                        'glass': '0 8px 32px 0 rgba(0, 0, 0, 0.37)',
+                    }
+                }
+            }
+        }
+    </script>
+<!-- FontAwesome Icons -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Chart.js for Teacher Insight -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- Alpine.js -->
+<script defer="" src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<style>
+        :root {
+            --neon-cyan: #5DF2E4;
+            --neon-blue: #5AA9FF;
+            --neon-violet: #B48CFF;
+            --bg-black: #030712;
+            --bg-deep: #06111E;
+            --bg-mid: #0A1930;
+            --surface-1: rgba(7, 18, 34, 0.86);
+            --surface-2: rgba(9, 24, 46, 0.72);
+        }
+
+        @keyframes floatGlow {
+            0% { transform: translate3d(0, 0, 0) scale(1); }
+            100% { transform: translate3d(1.5%, -1.5%, 0) scale(1.04); }
+        }
+
+        html {
+            background-color: #030712 !important;
+            min-height: 100%;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #030712 !important;
+            background:
+                radial-gradient(circle at 14% 18%, rgba(93, 242, 228, 0.10), transparent 18%),
+                radial-gradient(circle at 86% 14%, rgba(180, 140, 255, 0.10), transparent 20%),
+                radial-gradient(circle at 82% 84%, rgba(90, 169, 255, 0.08), transparent 24%),
+                linear-gradient(140deg, #030712 0%, #06111E 34%, #0A1930 68%, #050B16 100%);
+            color: #F5FBFF;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(93, 242, 228, 0.045) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(90, 169, 255, 0.045) 1px, transparent 1px);
+            background-size: 42px 42px;
+            opacity: 0.48;
+            pointer-events: none;
+            z-index: -3;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            inset: -10%;
+            background:
+                radial-gradient(circle at 22% 30%, rgba(93, 242, 228, 0.08), transparent 18%),
+                radial-gradient(circle at 78% 22%, rgba(180, 140, 255, 0.08), transparent 18%),
+                radial-gradient(circle at 66% 78%, rgba(90, 169, 255, 0.07), transparent 20%);
+            filter: blur(70px);
+            animation: floatGlow 18s ease-in-out infinite alternate;
+            pointer-events: none;
+            z-index: -4;
+        }
+
+        h1, h2, h3, h4, .font-heading {
+            font-family: 'Space Grotesk', sans-serif;
+            letter-spacing: 0.01em;
+            text-shadow: 0 0 10px rgba(93, 242, 228, 0.16), 0 0 18px rgba(90, 169, 255, 0.08);
+        }
+
+        .glass-panel {
+            background: linear-gradient(180deg, rgba(10, 24, 44, 0.84), rgba(5, 13, 25, 0.80));
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(93, 242, 228, 0.18);
+            box-shadow:
+                0 0 0 1px rgba(255, 255, 255, 0.03) inset,
+                0 12px 36px rgba(0, 0, 0, 0.32),
+                0 0 24px rgba(93, 242, 228, 0.06);
+        }
+
+        .glass-card {
+            background: linear-gradient(180deg, rgba(10, 22, 40, 0.78), rgba(7, 18, 34, 0.62));
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 10px 28px rgba(0, 0, 0, 0.22);
+            transition: all 0.3s ease;
+        }
+
+        .glass-card:hover {
+            border-color: rgba(93, 242, 228, 0.38);
+            box-shadow: 0 0 24px rgba(93, 242, 228, 0.12), 0 0 32px rgba(180, 140, 255, 0.05);
+            transform: translateY(-4px);
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #9EFFF9 0%, #5DF2E4 26%, #5AA9FF 62%, #C8A8FF 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 8px rgba(93, 242, 228, 0.18)) drop-shadow(0 0 14px rgba(90, 169, 255, 0.10));
+        }
+
+        .digital-grid {
+            background-color: #030712 !important;
+            background-image:
+                radial-gradient(circle at 14% 18%, rgba(93, 242, 228, 0.10), transparent 18%),
+                radial-gradient(circle at 86% 14%, rgba(180, 140, 255, 0.10), transparent 20%),
+                radial-gradient(circle at 82% 84%, rgba(90, 169, 255, 0.08), transparent 24%),
+                radial-gradient(rgba(93, 242, 228, 0.065) 1px, transparent 1px),
+                linear-gradient(140deg, #030712 0%, #06111E 34%, #0A1930 68%, #050B16 100%) !important;
+            background-size: auto, auto, auto, 32px 32px, auto;
+            background-attachment: fixed;
+        }
+
+        main, section, footer {
+            background-color: transparent !important;
+        }
+
+        .text-cyan-glow {
+            text-shadow: 0 0 10px rgba(93, 242, 228, 0.28), 0 0 20px rgba(93, 242, 228, 0.12);
+        }
+
+        .text-electric {
+            text-shadow: 0 0 10px rgba(90, 169, 255, 0.22), 0 0 18px rgba(90, 169, 255, 0.10);
+        }
+
+        .text-violet {
+            text-shadow: 0 0 10px rgba(180, 140, 255, 0.20), 0 0 18px rgba(180, 140, 255, 0.10);
+        }
+
+        .shadow-glow-cyan, .shadow-glow-violet {
+            filter: drop-shadow(0 0 10px rgba(93, 242, 228, 0.18));
+        }
+
+        [x-cloak] { display: none !important; }
+
+        button { touch-action: manipulation; }
+
+        ::selection {
+            background: rgba(93, 242, 228, 0.26);
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #06111E;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #0D2035;
+            border: 1px solid rgba(93, 242, 228, 0.22);
+            border-radius: 4px;
+            box-shadow: 0 0 8px rgba(93, 242, 228, 0.12);
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #5AA9FF;
+        }
+    </style>
+</head>
+<body @keydown.escape.window="vrModalOpen = false; novaModalOpen = false; profileModalOpen = false" class="digital-grid min-h-screen flex flex-col justify-between selection:bg-cyan-glow selection:text-navy-base" x-data="appData()" x-init="initApp()" style="background-color:#030712 !important; min-height:100vh;">
+<!-- Sticky Navigation Bar -->
+<header class="sticky top-0 z-50 glass-panel border-b border-cyan-glow/20 px-4 lg:px-8 py-3">
+<div class="max-w-7xl mx-auto flex justify-between items-center">
+<!-- Brand Logo -->
+<div @click="currentView = 'home'" class="flex items-center space-x-3 cursor-pointer">
+<div class="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-glow via-electric to-violet flex items-center justify-center text-navy-base shadow-glow-cyan font-bold text-xl">
+<i class="fa-solid fa-cube"></i>
+</div>
+<div>
+<span class="text-xl font-bold font-heading tracking-wider text-snow flex items-center gap-2 gradient-text">
+                        VRAISE <span class="text-xs px-2 py-0.5 rounded bg-cyan-glow/20 text-cyan-glow border border-cyan-glow/40">EduHub</span>
+</span>
+<p class="text-[10px] text-cyan-glow/70 tracking-widest uppercase font-medium">VR • AI • Pendidikan Pintar</p>
+</div>
+</div>
+<!-- Desktop Menu Navigation -->
+<nav class="hidden lg:flex items-center space-x-6 text-sm font-medium">
+<button :class="currentView === 'home' ? 'text-cyan-glow font-semibold border-b-2 border-cyan-glow pb-1' : 'text-snow/80 hover:text-cyan-glow transition-colors'" @click="currentView = 'home'" type="button">Laman Utama</button>
+<button :class="currentView === 'missions' ? 'text-cyan-glow font-semibold border-b-2 border-cyan-glow pb-1' : 'text-snow/80 hover:text-cyan-glow transition-colors'" @click="currentView = 'missions'" type="button">Misi Sains</button>
+<button @click="startFeaturedMission(2)" class="text-snow/80 hover:text-cyan-glow transition-colors flex items-center gap-1.5" type="button"><i class="fa-solid fa-vr-cardboard text-violet"></i> Dunia VR</button>
+<button @click="openNovaModal()" class="text-snow/80 hover:text-cyan-glow transition-colors flex items-center gap-1.5" type="button"><i class="fa-solid fa-robot text-cyan-glow"></i> NOVA AI</button>
+<button :class="currentView === 'gallery' ? 'text-cyan-glow font-semibold border-b-2 border-cyan-glow pb-1' : 'text-snow/80 hover:text-cyan-glow transition-colors'" @click="currentView = 'gallery'" type="button">Galeri</button>
+<button :class="currentView === 'progress' ? 'text-cyan-glow font-semibold border-b-2 border-cyan-glow pb-1' : 'text-snow/80 hover:text-cyan-glow transition-colors'" @click="currentView = 'progress'" type="button">Kemajuan</button>
+<button :class="currentView === 'insight' ? 'text-cyan-glow font-semibold border-b-2 border-cyan-glow pb-1' : 'text-snow/80 hover:text-cyan-glow transition-colors'" @click="currentView = 'insight'" class="text-violet hover:text-violet/80 font-medium flex items-center gap-1" type="button"><i class="fa-solid fa-chart-line"></i> Analitik Guru</button>
+</nav>
+<!-- CTA Button -->
+<div class="hidden lg:flex items-center space-x-3">
+<button @click="openProfileModal('profile')" class="px-3 py-2.5 rounded-xl text-xs font-semibold glass-card border border-cyan-glow/30 text-cyan-glow hover:border-cyan-glow" type="button">
+<i class="fa-solid fa-user mr-1"></i> <span x-text="studentName || 'Profil Murid'"></span>
+</button>
+<button @click="startFeaturedMission()" class="px-5 py-2.5 rounded-xl font-semibold text-sm bg-gradient-to-r from-cyan-glow via-electric to-violet text-navy-base hover:opacity-90 shadow-glow-cyan transition-all transform hover:scale-105" type="button">
+                    Mula Belajar
+                </button>
+</div>
+<!-- Mobile Hamburger Button -->
+<button @click="mobileMenuOpen = !mobileMenuOpen" class="lg:hidden text-snow text-xl p-2 focus:outline-none" type="button">
+<i :class="mobileMenuOpen ? 'fa-xmark' : 'fa-bars'" class="fa-solid"></i>
+</button>
+</div>
+<!-- Mobile Navigation Menu Dropdown -->
+<div class="lg:hidden glass-panel mt-3 rounded-2xl p-4 space-y-3 text-sm font-medium border border-cyan-glow/30" x-show="mobileMenuOpen" x-transition="">
+<button @click="currentView = 'home'; mobileMenuOpen = false" class="block w-full text-left py-2 px-3 rounded hover:bg-cyan-glow/10" type="button">Laman Utama</button>
+<button @click="currentView = 'missions'; mobileMenuOpen = false" class="block w-full text-left py-2 px-3 rounded hover:bg-cyan-glow/10" type="button">Misi Sains</button>
+<button @click="startFeaturedMission(2); mobileMenuOpen = false" class="block w-full text-left py-2 px-3 rounded hover:bg-cyan-glow/10 text-violet font-semibold" type="button">🥽 Dunia VR (Peredaran Darah)</button>
+<button @click="openNovaModal(); mobileMenuOpen = false" class="block w-full text-left py-2 px-3 rounded hover:bg-cyan-glow/10 text-cyan-glow font-semibold" type="button">🤖 Rakan AI NOVA</button>
+<button @click="currentView = 'gallery'; mobileMenuOpen = false" class="block w-full text-left py-2 px-3 rounded hover:bg-cyan-glow/10" type="button">Galeri</button>
+<button @click="currentView = 'progress'; mobileMenuOpen = false" class="block w-full text-left py-2 px-3 rounded hover:bg-cyan-glow/10" type="button">Kemajuan Saya</button>
+<button @click="currentView = 'insight'; mobileMenuOpen = false" class="block w-full text-left py-2 px-3 rounded hover:bg-cyan-glow/10 text-electric" type="button">📊 Analitik Guru</button>
+<button @click="openProfileModal('profile'); mobileMenuOpen = false" class="block w-full text-left py-2 px-3 rounded hover:bg-cyan-glow/10 text-cyan-glow" type="button">👤 Profil Murid</button>
+<button @click="startFeaturedMission(); mobileMenuOpen = false" class="w-full mt-2 py-3 rounded-xl font-bold text-center bg-gradient-to-r from-cyan-glow to-electric text-navy-base" type="button">Mula Belajar</button>
+</div>
+</header>
+<!-- MAIN CONTENT CONTAINER -->
+<main class="flex-grow">
+<!-- ================= VIEW 1: HOME ================= -->
+<section class="max-w-7xl mx-auto px-4 lg:px-8 py-8 lg:py-16 space-y-20" x-show="currentView === 'home'" x-transition="">
+<!-- Hero Section -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+<!-- Hero Left Info -->
+<div class="lg:col-span-7 space-y-6 text-center lg:text-left">
+<div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full glass-card border border-cyan-glow/30 text-xs font-semibold text-cyan-glow tracking-wide">
+<span class="w-2 h-2 rounded-full bg-cyan-glow animate-pulse"></span>
+                        INOVASI DIGITAL &amp; AI DALAM PENDIDIKAN
+                    </div>
+<h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold font-heading leading-tight">
+                        Pembelajaran bukan sekadar dilihat.<br/>
+<span class="gradient-text">Ia dialami.</span>
+</h1>
+<p class="text-lg text-snow/70 max-w-2xl font-normal leading-relaxed">
+                        Alami pembelajaran Sains melalui Realiti Maya, Kecerdasan Buatan dan pembelajaran interaktif. Membawa Sains Tahun 5 ke dalam pengalaman pembelajaran yang aktif dan imersif.
+                    </p>
+<div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-4">
+<button @click="startFeaturedMission()" class="w-full sm:w-auto px-8 py-4 rounded-xl font-bold text-navy-base bg-gradient-to-r from-cyan-glow via-electric to-violet shadow-glow-cyan hover:opacity-90 transform hover:-translate-y-0.5 transition-all flex items-center justify-center gap-3" type="button">
+<i class="fa-solid fa-rocket text-navy-base"></i> Mulakan Perjalanan Anda
+                        </button>
+<button @click="startFeaturedMission(2)" class="w-full sm:w-auto px-8 py-4 rounded-xl font-semibold border border-cyan-glow/40 text-cyan-glow glass-panel hover:bg-cyan-glow/10 transition-all flex items-center justify-center gap-3" type="button">
+<i class="fa-solid fa-vr-cardboard"></i> Terokai VR
+                        </button>
+</div>
+<!-- Taglines -->
+<div class="pt-6 border-t border-white/10 flex flex-wrap items-center justify-center lg:justify-start gap-4 text-xs text-snow/60">
+<span class="font-semibold text-cyan-glow">Slogan:</span> Melangkaui Pembelajaran. Menuju Pengalaman.
+                        <span class="text-white/20">•</span>
+<span>Teroka • Alami • Interaksi • Cipta • Refleksi</span>
+</div>
+</div>
+<!-- Hero Right Interactive Futuristic Orbit Visual -->
+<div class="lg:col-span-5 flex justify-center relative">
+<div class="relative w-72 h-72 sm:w-80 sm:h-80 lg:w-96 lg:h-96 rounded-full glass-panel border border-cyan-glow/30 flex items-center justify-center shadow-glow-cyan p-6 animate-pulse">
+<!-- Core Sphere -->
+<div class="w-40 h-40 rounded-full bg-gradient-to-br from-cyan-glow/30 via-electric/30 to-violet/30 border border-cyan-glow flex flex-col items-center justify-center text-center p-4 backdrop-blur-md">
+<i class="fa-solid fa-heart-pulse text-4xl text-cyan-glow mb-2 animate-bounce"></i>
+<span class="text-xs font-bold uppercase tracking-wider text-snow">Sains Tahun 5</span>
+<span class="text-[10px] text-cyan-glow">Sistem Peredaran Darah</span>
+</div>
+<!-- Orbiting Badges -->
+<div class="absolute -top-3 left-1/2 transform -translate-x-1/2 glass-card px-4 py-2 rounded-xl border border-cyan-glow/40 text-xs font-semibold text-cyan-glow flex items-center gap-2 shadow-lg">
+                            🥽 <span>VR 360°</span>
+</div>
+<div class="absolute top-1/2 -right-6 transform -translate-y-1/2 glass-card px-4 py-2 rounded-xl border border-violet/40 text-xs font-semibold text-violet flex items-center gap-2 shadow-lg">
+                            🤖 <span>NOVA AI</span>
+</div>
+<div class="absolute -bottom-3 left-1/2 transform -translate-x-1/2 glass-card px-4 py-2 rounded-xl border border-electric/40 text-xs font-semibold text-electric flex items-center gap-2 shadow-lg">
+                            🎮 <span>Cabaran</span>
+</div>
+<div class="absolute top-1/2 -left-6 transform -translate-y-1/2 glass-card px-4 py-2 rounded-xl border border-cyan-glow/40 text-xs font-semibold text-snow flex items-center gap-2 shadow-lg">
+                            📊 <span>Analitik</span>
+</div>
+</div>
+</div>
+</div>
+<!-- WHAT IS VRAISE SECTION -->
+<div class="space-y-10 pt-12 border-t border-white/10">
+<div class="text-center space-y-3">
+<h2 class="text-3xl font-bold font-heading text-snow">Selamat Datang ke <span class="gradient-text">VRAISE Sains</span></h2>
+<p class="text-snow/70 max-w-3xl mx-auto text-sm leading-relaxed">
+                        VRAISE EduHub ialah ekosistem pembelajaran imersif yang mengintegrasikan Realiti Maya, Kecerdasan Buatan, aktiviti interaktif, penciptaan hasil murid dan analitik pembelajaran dalam satu pengalaman pembelajaran digital.
+                    </p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+<div class="glass-card p-6 rounded-2xl space-y-4">
+<div class="w-12 h-12 rounded-xl bg-cyan-glow/10 border border-cyan-glow/30 flex items-center justify-center text-2xl">
+                            🥽
+                        </div>
+<h3 class="font-bold text-lg text-cyan-glow">PENGALAMAN VR</h3>
+<p class="text-xs text-snow/70 leading-relaxed">Terokai Sains melangkaui bilik darjah melalui persekitaran maya 360° yang imersif.</p>
+</div>
+<div class="glass-card p-6 rounded-2xl space-y-4">
+<div class="w-12 h-12 rounded-xl bg-violet/10 border border-violet/30 flex items-center justify-center text-2xl">
+                            🤖
+                        </div>
+<h3 class="font-bold text-lg text-violet">RAKAN AI NOVA</h3>
+<p class="text-xs text-snow/70 leading-relaxed">Tanya. Teroka. Fahami. Tutor AI pintar yang disesuaikan untuk murid sekolah rendah.</p>
+</div>
+<div class="glass-card p-6 rounded-2xl space-y-4">
+<div class="w-12 h-12 rounded-xl bg-electric/10 border border-electric/30 flex items-center justify-center text-2xl">
+                            🎮
+                        </div>
+<h3 class="font-bold text-lg text-electric">CABARAN INTERAKTIF</h3>
+<p class="text-xs text-snow/70 leading-relaxed">Belajar melalui aktiviti. Permainan mini dan misi direka untuk mengukuhkan kefahaman.</p>
+</div>
+<div class="glass-card p-6 rounded-2xl space-y-4">
+<div class="w-12 h-12 rounded-xl bg-cyan-glow/10 border border-cyan-glow/30 flex items-center justify-center text-2xl">
+                            🎨
+                        </div>
+<h3 class="font-bold text-lg text-snow">CIPTA &amp; KONGSI</h3>
+<p class="text-xs text-snow/70 leading-relaxed">Terjemahkan pengetahuan kepada hasil ciptaan. Hantar model, poster, video dan refleksi.</p>
+</div>
+</div>
+</div>
+<!-- VRAISE LEARNING JOURNEY -->
+<div class="glass-panel rounded-3xl p-8 space-y-8 border border-cyan-glow/20">
+<div class="text-center space-y-2">
+<h2 class="text-2xl font-bold font-heading text-snow">Perjalanan Pembelajaran VRAISE Anda</h2>
+<p class="text-xs text-cyan-glow">Ikuti kerangka pedagogi imersif 5 langkah</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-5 gap-4 relative">
+<!-- Step 1 -->
+<div class="glass-card p-5 rounded-2xl text-center space-y-2 border border-cyan-glow/30">
+<span class="text-xs font-bold text-cyan-glow tracking-widest">01 TEROKA</span>
+<div class="text-3xl my-2">🥽</div>
+<p class="text-xs font-semibold text-snow">Masuki dunia VR</p>
+</div>
+<!-- Step 2 -->
+<div class="glass-card p-5 rounded-2xl text-center space-y-2 border border-violet/30">
+<span class="text-xs font-bold text-violet tracking-widest">02 TANYA AI</span>
+<div class="text-3xl my-2">🤖</div>
+<p class="text-xs font-semibold text-snow">Tanya NOVA &amp; teroka</p>
+</div>
+<!-- Step 3 -->
+<div class="glass-card p-5 rounded-2xl text-center space-y-2 border border-electric/30">
+<span class="text-xs font-bold text-electric tracking-widest">03 CABARAN</span>
+<div class="text-3xl my-2">🎮</div>
+<p class="text-xs font-semibold text-snow">Uji kefahaman</p>
+</div>
+<!-- Step 4 -->
+<div class="glass-card p-5 rounded-2xl text-center space-y-2 border border-cyan-glow/30">
+<span class="text-xs font-bold text-cyan-glow tracking-widest">04 CIPTA</span>
+<div class="text-3xl my-2">🎨</div>
+<p class="text-xs font-semibold text-snow">Ubah pengetahuan menjadi ciptaan</p>
+</div>
+<!-- Step 5 -->
+<div class="glass-card p-5 rounded-2xl text-center space-y-2 border border-violet/30">
+<span class="text-xs font-bold text-violet tracking-widest">05 REFLEKSI</span>
+<div class="text-3xl my-2">💡</div>
+<p class="text-xs font-semibold text-snow">Fikir. Perbaiki. Berkembang.</p>
+</div>
+</div>
+</div>
+<!-- INNOVATION IMPACT SECTION (FOR JUDGES) -->
+<div class="space-y-8 pt-8">
+<div class="text-center space-y-2">
+<span class="text-xs font-semibold text-violet tracking-widest uppercase">Kerangka Pedagogi</span>
+<h2 class="text-3xl font-bold font-heading text-snow">Mengapa VRAISE EduHub?</h2>
+<p class="text-xs text-snow/70 max-w-xl mx-auto">VRAISE EduHub tidak menggunakan teknologi sebagai elemen hiasan. Setiap teknologi mempunyai fungsi pedagogi yang jelas dalam proses pembelajaran murid.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+<div class="p-6 rounded-2xl glass-panel space-y-3 border border-cyan-glow/30">
+<div class="text-xs font-bold text-cyan-glow uppercase tracking-wider">IMERSIF</div>
+<h4 class="font-bold text-base text-snow">Visualisasi VR</h4>
+<p class="text-xs text-snow/70">Membantu murid melihat konsep mikro/abstrak yang sukar divisualisasikan dalam buku teks biasa.</p>
+</div>
+<div class="p-6 rounded-2xl glass-panel space-y-3 border border-violet/30">
+<div class="text-xs font-bold text-violet uppercase tracking-wider">PINTAR</div>
+<h4 class="font-bold text-base text-snow">Tutor AI NOVA</h4>
+<p class="text-xs text-snow/70">Memberi sokongan soalan bimbingan secara responsif mengikut tahap kognitif murid.</p>
+</div>
+<div class="p-6 rounded-2xl glass-panel space-y-3 border border-electric/30">
+<div class="text-xs font-bold text-electric uppercase tracking-wider">INTERAKTIF</div>
+<h4 class="font-bold text-base text-snow">Cabaran Bergamifikasi</h4>
+<p class="text-xs text-snow/70">Gamifikasi simulasi membantu mengukuhkan kefahaman konsep sains melalui pembelajaran berasaskan pengalaman dan tindakan.</p>
+</div>
+<div class="p-6 rounded-2xl glass-panel space-y-3 border border-cyan-glow/30">
+<div class="text-xs font-bold text-cyan-glow uppercase tracking-wider">BERASASKAN BUKTI</div>
+<h4 class="font-bold text-base text-snow">Analitik Pembelajaran</h4>
+<p class="text-xs text-snow/70">Penjejakan peningkatan pembelajaran (Pra berbanding Pasca) dan hasil ciptaan murid menghasilkan bukti pembelajaran yang telus.</p>
+</div>
+</div>
+</div>
+<!-- SCALABILITY ROADMAP -->
+<div class="glass-panel p-8 rounded-3xl space-y-6 border border-white/10">
+<div class="text-center space-y-2">
+<h2 class="text-2xl font-bold font-heading text-snow">Dibina untuk Berkembang (Kebolehskalaan)</h2>
+<p class="text-xs text-snow/60">Perancangan pembangunan ekosistem VRAISE merentasi mata pelajaran dan tahap persekolahan</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-4 gap-4 pt-4">
+<div class="p-4 rounded-xl glass-card border border-cyan-glow/40">
+<span class="text-xs font-bold text-cyan-glow">FASA 1 (AKTIF)</span>
+<h4 class="font-bold text-sm text-snow mt-1">Sains Tahun 5</h4>
+<p class="text-[11px] text-snow/60 mt-1">Modul rintis: Sistem peredaran darah dan topik teras sekolah rendah.</p>
+</div>
+<div class="p-4 rounded-xl glass-card border border-white/10 opacity-70">
+<span class="text-xs font-bold text-violet">FASA 2</span>
+<h4 class="font-bold text-sm text-snow mt-1">Sains Tahun 4–6</h4>
+<p class="text-[11px] text-snow/60 mt-1">Integrasi penuh kurikulum Sains Sekolah Rendah KSSR Semakan.</p>
+</div>
+<div class="p-4 rounded-xl glass-card border border-white/10 opacity-70">
+<span class="text-xs font-bold text-electric">FASA 3</span>
+<h4 class="font-bold text-sm text-snow mt-1">Matematik &amp; Kemanusiaan</h4>
+<p class="text-[11px] text-snow/60 mt-1">Geometri 3D Matematik, lawatan VR Sejarah dan Bahasa.</p>
+</div>
+<div class="p-4 rounded-xl glass-card border border-white/10 opacity-70">
+<span class="text-xs font-bold text-snow">FASA 4</span>
+<h4 class="font-bold text-sm text-snow mt-1">Ekosistem Sekolah</h4>
+<p class="text-[11px] text-snow/60 mt-1">Rangkaian sekolah kebangsaan, integrasi LMS dan papan pemuka analitik KPM.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- ================= VIEW 2: SCIENCE MISSIONS ================= -->
+<section class="max-w-7xl mx-auto px-4 lg:px-8 py-10 space-y-8" x-show="currentView === 'missions'" x-transition="">
+<div class="text-center space-y-3">
+<span class="px-3 py-1 rounded-full text-xs font-semibold bg-cyan-glow/10 text-cyan-glow border border-cyan-glow/30">MODUL KURIKULUM</span>
+<h2 class="text-3xl font-bold font-heading text-snow">Pilih Misi Sains Anda</h2>
+<p class="text-sm text-snow/70">Pilih satu misi dan mulakan penerokaan Sains Tahun 5.</p>
+</div>
+<!-- Missions Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+<!-- Mission 01 -->
+<div class="glass-card p-6 rounded-2xl space-y-4 border border-white/10 opacity-75 relative">
+<div class="flex justify-between items-start">
+<span class="text-xs font-bold text-snow/50 uppercase tracking-widest">Misi 01</span>
+<span class="px-2.5 py-1 rounded text-[10px] bg-navy-deep/80 text-snow/60 font-semibold">Akan Datang</span>
+</div>
+<div class="text-4xl">🦴</div>
+<h3 class="font-bold text-lg text-snow">Sistem Rangka Manusia</h3>
+<p class="text-xs text-snow/60">Terokai fungsi tulang, sendi dan struktur sokongan badan manusia.</p>
+</div>
+<!-- Mission 02 FEATURED -->
+<div class="glass-card p-6 rounded-2xl space-y-4 border-2 border-cyan-glow shadow-glow-cyan bg-navy-deep/80 relative">
+<div class="flex justify-between items-start">
+<span class="text-xs font-bold text-cyan-glow uppercase tracking-widest">Misi 02</span>
+<span class="px-2.5 py-1 rounded text-[10px] bg-cyan-glow/20 text-cyan-glow border border-cyan-glow/40 font-bold animate-pulse">MISI PILIHAN</span>
+</div>
+<div class="text-4xl">❤️</div>
+<h3 class="font-bold text-xl text-snow">Sistem Peredaran Darah</h3>
+<p class="text-xs text-snow/80">Mengembara di dalam tubuh manusia sebagai sel darah merah untuk membawa oksigen dan nutrien.</p>
+<button @click="startFeaturedMission()" class="w-full py-3 rounded-xl font-bold text-xs bg-gradient-to-r from-cyan-glow via-electric to-violet text-navy-base hover:opacity-90 shadow-glow-cyan transition-all flex items-center justify-center gap-2" type="button">
+<i class="fa-solid fa-play"></i> Masuk Misi
+                    </button>
+</div>
+<!-- Mission 03 -->
+<div class="glass-card p-6 rounded-2xl space-y-4 border border-white/10 opacity-75">
+<div class="flex justify-between items-start">
+<span class="text-xs font-bold text-snow/50 uppercase tracking-widest">Misi 03</span>
+<span class="px-2.5 py-1 rounded text-[10px] bg-navy-deep/80 text-snow/60 font-semibold">Akan Datang</span>
+</div>
+<div class="text-4xl">🌱</div>
+<h3 class="font-bold text-lg text-snow">Kemandirian Tumbuhan</h3>
+<p class="text-xs text-snow/60">Pencaran biji benih dan penyesuaian tumbuhan terhadap iklim extreme.</p>
+</div>
+<!-- Mission 04 -->
+<div class="glass-card p-6 rounded-2xl space-y-4 border border-white/10 opacity-75">
+<div class="flex justify-between items-start">
+<span class="text-xs font-bold text-snow/50 uppercase tracking-widest">Misi 04</span>
+<span class="px-2.5 py-1 rounded text-[10px] bg-navy-deep/80 text-snow/60 font-semibold">Akan Datang</span>
+</div>
+<div class="text-4xl">⚡</div>
+<h3 class="font-bold text-lg text-snow">Elektrik</h3>
+<p class="text-xs text-snow/60">Litar bersiri, litar selari dan keselamatan penggunaan tenaga elektrik.</p>
+</div>
+<!-- Mission 05 -->
+<div class="glass-card p-6 rounded-2xl space-y-4 border border-white/10 opacity-75">
+<div class="flex justify-between items-start">
+<span class="text-xs font-bold text-snow/50 uppercase tracking-widest">Misi 05</span>
+<span class="px-2.5 py-1 rounded text-[10px] bg-navy-deep/80 text-snow/60 font-semibold">Akan Datang</span>
+</div>
+<div class="text-4xl">🌡️</div>
+<h3 class="font-bold text-lg text-snow">Haba</h3>
+<p class="text-xs text-snow/60">Suhu, pengembangan, pengecutan dan kesan pemindahan haba.</p>
+</div>
+<!-- Mission 06 -->
+<div class="glass-card p-6 rounded-2xl space-y-4 border border-white/10 opacity-75">
+<div class="flex justify-between items-start">
+<span class="text-xs font-bold text-snow/50 uppercase tracking-widest">Misi 06</span>
+<span class="px-2.5 py-1 rounded text-[10px] bg-navy-deep/80 text-snow/60 font-semibold">Akan Datang</span>
+</div>
+<div class="text-4xl">🔩</div>
+<h3 class="font-bold text-lg text-snow">Pengaratan</h3>
+<p class="text-xs text-snow/60">Faktor-faktor pengaratan bahan dan cara mencegahnya.</p>
+</div>
+<!-- Mission 07 -->
+<div class="glass-card p-6 rounded-2xl space-y-4 border border-white/10 opacity-75">
+<div class="flex justify-between items-start">
+<span class="text-xs font-bold text-snow/50 uppercase tracking-widest">Misi 07</span>
+<span class="px-2.5 py-1 rounded text-[10px] bg-navy-deep/80 text-snow/60 font-semibold">Akan Datang</span>
+</div>
+<div class="text-4xl">💧</div>
+<h3 class="font-bold text-lg text-snow">Jirim</h3>
+<p class="text-xs text-snow/60">Pepejal, cecair, gas dan perubahannya melalui Kitaran Air Semula Jadi.</p>
+</div>
+<!-- Mission 08 -->
+<div class="glass-card p-6 rounded-2xl space-y-4 border border-white/10 opacity-75">
+<div class="flex justify-between items-start">
+<span class="text-xs font-bold text-snow/50 uppercase tracking-widest">Misi 08</span>
+<span class="px-2.5 py-1 rounded text-[10px] bg-navy-deep/80 text-snow/60 font-semibold">Akan Datang</span>
+</div>
+<div class="text-4xl">🌙</div>
+<h3 class="font-bold text-lg text-snow">Fasa Bulan dan Buruj</h3>
+<p class="text-xs text-snow/60">Peredaran bulan mengelilingi bumi dan bentuk buruj di langit malam.</p>
+</div>
+<!-- Mission 09 -->
+<div class="glass-card p-6 rounded-2xl space-y-4 border border-white/10 opacity-75">
+<div class="flex justify-between items-start">
+<span class="text-xs font-bold text-snow/50 uppercase tracking-widest">Misi 09</span>
+<span class="px-2.5 py-1 rounded text-[10px] bg-navy-deep/80 text-snow/60 font-semibold">Akan Datang</span>
+</div>
+<div class="text-4xl">⚙️</div>
+<h3 class="font-bold text-lg text-snow">Mesin</h3>
+<p class="text-xs text-snow/60">Kombinasi mesin ringkas dalam reka bentuk alat moden.</p>
+</div>
+</div>
+</section>
+<!-- ================= VIEW 3: FEATURED MISSION ACTIVE WORKFLOW ================= -->
+<section class="max-w-7xl mx-auto px-4 lg:px-8 py-8 space-y-8" x-show="currentView === 'active-mission'" x-transition="">
+<!-- Active Mission Top Banner & Progress Stepper -->
+<div class="glass-panel p-6 rounded-3xl space-y-6 border border-cyan-glow/30">
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-white/10 pb-4">
+<div>
+<span class="text-xs font-bold text-cyan-glow tracking-widest uppercase">MISI PILIHAN 02</span>
+<h2 class="text-2xl font-bold font-heading text-snow flex items-center gap-2">
+                            ❤️ PENGEMBARAAN DI DALAM TUBUH MANUSIA
+                        </h2>
+<p class="text-xs text-snow/70">Sistem Peredaran Darah Manusia • Tahun 5</p>
+</div>
+<!-- Mission Overall Progress Indicator -->
+<div class="flex items-center gap-3">
+<div class="text-right">
+<span class="text-xs text-snow/60">Kemajuan Misi</span>
+<div class="text-sm font-bold text-cyan-glow" x-text="calculateMissionProgress() + '%'"></div>
+</div>
+<div class="w-32 bg-navy-base h-3 rounded-full overflow-hidden border border-cyan-glow/30">
+<div :style="'width: ' + calculateMissionProgress() + '%'" class="bg-gradient-to-r from-cyan-glow to-violet h-full transition-all duration-500"></div>
+</div>
+</div>
+</div>
+<!-- Step Navigator Horizontal Tabs -->
+<div class="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none text-xs font-medium">
+<button :class="missionStep === 1 ? 'bg-cyan-glow text-navy-base font-bold' : 'glass-card text-snow/70 hover:text-snow'" @click="missionStep = 1" class="px-3.5 py-2 rounded-xl whitespace-nowrap transition-all flex items-center gap-1.5" type="button">
+<span>1.</span> Ujian Pra
+                    </button>
+<button :class="missionStep === 2 ? 'bg-cyan-glow text-navy-base font-bold' : 'glass-card text-snow/70 hover:text-snow'" @click="missionStep = 2" class="px-3.5 py-2 rounded-xl whitespace-nowrap transition-all flex items-center gap-1.5" type="button">
+<span>2.</span> 🥽 Pengalaman VR
+                    </button>
+<button :class="missionStep === 3 ? 'bg-cyan-glow text-navy-base font-bold' : 'glass-card text-snow/70 hover:text-snow'" @click="missionStep = 3" class="px-3.5 py-2 rounded-xl whitespace-nowrap transition-all flex items-center gap-1.5" type="button">
+<span>3.</span> 🤖 NOVA AI
+                    </button>
+<button :class="missionStep === 4 ? 'bg-cyan-glow text-navy-base font-bold' : 'glass-card text-snow/70 hover:text-snow'" @click="missionStep = 4" class="px-3.5 py-2 rounded-xl whitespace-nowrap transition-all flex items-center gap-1.5" type="button">
+<span>4.</span> 🎮 Misi Sel Darah
+                    </button>
+<button :class="missionStep === 5 ? 'bg-cyan-glow text-navy-base font-bold' : 'glass-card text-snow/70 hover:text-snow'" @click="missionStep = 5" class="px-3.5 py-2 rounded-xl whitespace-nowrap transition-all flex items-center gap-1.5" type="button">
+<span>5.</span> Kuiz
+                    </button>
+<button :class="missionStep === 6 ? 'bg-cyan-glow text-navy-base font-bold' : 'glass-card text-snow/70 hover:text-snow'" @click="missionStep = 6" class="px-3.5 py-2 rounded-xl whitespace-nowrap transition-all flex items-center gap-1.5" type="button">
+<span>6.</span> Cipta
+                    </button>
+<button :class="missionStep === 7 ? 'bg-cyan-glow text-navy-base font-bold' : 'glass-card text-snow/70 hover:text-snow'" @click="missionStep = 7" class="px-3.5 py-2 rounded-xl whitespace-nowrap transition-all flex items-center gap-1.5" type="button">
+<span>7.</span> Refleksi
+                    </button>
+<button :class="missionStep === 8 ? 'bg-cyan-glow text-navy-base font-bold' : 'glass-card text-snow/70 hover:text-snow'" @click="missionStep = 8" class="px-3.5 py-2 rounded-xl whitespace-nowrap transition-all flex items-center gap-1.5" type="button">
+<span>8.</span> Ujian Pasca
+                    </button>
+<button :class="missionStep === 9 ? 'bg-cyan-glow text-navy-base font-bold' : 'glass-card text-snow/70 hover:text-snow'" @click="missionStep = 9" class="px-3.5 py-2 rounded-xl whitespace-nowrap transition-all flex items-center gap-1.5" type="button">
+<span>9.</span> Selesai 🏆
+                    </button>
+</div>
+</div>
+<!-- STEP 1: PRE-ASSESSMENT -->
+<div class="glass-panel p-8 rounded-3xl space-y-6 max-w-3xl mx-auto border border-cyan-glow/20" x-show="missionStep === 1">
+<div class="text-center space-y-2">
+<span class="px-3 py-1 rounded-full text-[10px] font-bold bg-violet/20 text-violet border border-violet/40">LANGKAH 01 — PENILAIAN DEMO</span>
+<h3 class="text-2xl font-bold font-heading text-snow">Apa yang Anda Tahu?</h3>
+<p class="text-xs text-snow/70">Sebelum memasuki dunia VR, mari lihat pengetahuan sedia ada anda tentang sistem peredaran darah manusia.</p>
+</div>
+<div class="space-y-6 pt-4" x-show="!preTestSubmitted">
+<template :key="idx" x-for="(q, idx) in preTestQuestions">
+<div class="glass-card p-5 rounded-2xl space-y-3 border border-white/10">
+<p class="text-sm font-semibold text-snow" x-text="(idx + 1) + '. ' + q.question"></p>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+<template :key="oIdx" x-for="(opt, oIdx) in q.options">
+<button :class="preTestAnswers[idx] === oIdx ? 'bg-cyan-glow text-navy-base font-bold' : 'glass-panel text-snow/80 hover:bg-navy-deep/70'" @click="preTestAnswers[idx] = oIdx" class="p-3 text-xs rounded-xl text-left border border-white/10 transition-all" type="button">
+<span x-text="opt"></span>
+</button>
+</template>
+</div>
+</div>
+</template>
+<button @click="submitPreTest()" class="w-full py-3.5 rounded-xl font-bold text-navy-base bg-gradient-to-r from-cyan-glow to-electric shadow-glow-cyan hover:opacity-90" type="button">
+                        Hantar Penilaian Pra
+                    </button>
+</div>
+<div class="text-center py-8 space-y-4" x-show="preTestSubmitted">
+<div class="w-20 h-20 mx-auto rounded-full bg-cyan-glow/20 border-2 border-cyan-glow flex items-center justify-center text-3xl text-cyan-glow">
+<i class="fa-solid fa-check"></i>
+</div>
+<h4 class="text-xl font-bold text-snow">Penilaian Pra Selesai!</h4>
+<p class="text-sm text-snow/70">Skor Awal Anda: <span class="text-cyan-glow font-bold text-lg" x-text="preTestScore"></span> / 5</p>
+<p class="text-xs text-snow/50 max-w-md mx-auto">Permulaan yang baik! Kini tiba masanya untuk meneroka pengalaman VR dan memahami bagaimana darah mengalir di dalam tubuh.</p>
+<button @click="missionStep = 2" class="px-6 py-3 rounded-xl font-bold text-xs bg-gradient-to-r from-cyan-glow to-violet text-navy-base shadow-glow-cyan" type="button">
+                        Teruskan ke Pengalaman VR 🥽
+                    </button>
+</div>
+</div>
+<!-- STEP 2: VR EXPERIENCE -->
+<div class="space-y-8" x-show="missionStep === 2">
+<div class="glass-panel p-8 rounded-3xl space-y-6 border border-cyan-glow/20">
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-white/10 pb-4">
+<div>
+<span class="px-3 py-1 rounded-full text-[10px] font-bold bg-cyan-glow/20 text-cyan-glow border border-cyan-glow/40">LANGKAH 02 — REALITI MAYA</span>
+<h3 class="text-2xl font-bold font-heading text-snow mt-1">Masuki Tubuh Manusia</h3>
+<p class="text-xs text-snow/70">Jelajahi Sistem Peredaran Darah melalui Paparan VR 360°</p>
+</div>
+<div class="flex gap-2">
+<button @click="openVRModal()" class="px-4 py-2 rounded-xl text-xs font-bold bg-cyan-glow text-navy-base shadow-glow-cyan hover:opacity-90" type="button">
+                                🥽 Masuk Mod VR
+                            </button>
+<button @click="openYouTubeVR()" class="px-4 py-2 rounded-xl text-xs font-bold glass-card text-violet border border-violet/40" type="button">
+                                <i class="fa-brands fa-youtube mr-1"></i> Buka di YouTube 360°
+                            </button>
+</div>
+</div>
+<!-- YouTube VR 360 Player -->
+<div class="relative w-full h-80 sm:h-96 rounded-2xl glass-card border border-cyan-glow/40 overflow-hidden bg-navy-base shadow-glow-cyan">
+<iframe src="https://www.youtube.com/embed/4gLeZl64P54?rel=0&modestbranding=1&playsinline=1&enablejsapi=1" title="Video VR 360 Sistem Peredaran Darah" class="w-full h-full border-0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+</div>
+<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-[10px] text-snow/50">
+<p><i class="fa-brands fa-youtube text-red-400 mr-1"></i> Video 360° dimainkan terus melalui YouTube. Seret paparan untuk melihat sekeliling.</p>
+<button @click="openYouTubeVR()" type="button" class="px-4 py-2 rounded-xl glass-card border border-violet/40 text-violet font-bold hover:border-violet">↗ Buka di YouTube 360°</button>
+</div>
+<!-- Storytelling Timeline -->
+<div class="space-y-4 pt-4">
+<h4 class="text-sm font-bold text-cyan-glow uppercase tracking-wider">Jalan Cerita Misi Anda</h4>
+<p class="text-[10px] text-snow/45">Sumber pengalaman 360°: video YouTube VR berkaitan perjalanan melalui salur darah dan jantung.</p>
+<p class="text-xs text-snow/80">Anda kini menjadi sel darah merah. Tugasan: Bergerak dari jantung, membawa oksigen dan lengkapkan perjalanan melalui seluruh tubuh.</p>
+<div class="grid grid-cols-2 md:grid-cols-5 gap-3 pt-2 text-center text-xs">
+<div class="p-3 rounded-xl glass-card border border-cyan-glow/30">
+<span class="font-bold text-cyan-glow">1. Jantung ❤️</span>
+<p class="text-[10px] text-snow/60 mt-1">Dipam ke paru-paru</p>
+</div>
+<div class="p-3 rounded-xl glass-card border border-electric/30">
+<span class="font-bold text-electric">2. Paru-paru 🫁</span>
+<p class="text-[10px] text-snow/60 mt-1">Mengambil oksigen</p>
+</div>
+<div class="p-3 rounded-xl glass-card border border-cyan-glow/30">
+<span class="font-bold text-cyan-glow">3. Jantung ❤️</span>
+<p class="text-[10px] text-snow/60 mt-1">Dipam ke seluruh badan</p>
+</div>
+<div class="p-3 rounded-xl glass-card border border-violet/30">
+<span class="font-bold text-violet">4. Badan 🧍</span>
+<p class="text-[10px] text-snow/60 mt-1">Menghantar O₂ &amp; nutrien</p>
+</div>
+<div class="p-3 rounded-xl glass-card border border-cyan-glow/30">
+<span class="font-bold text-cyan-glow">5. Jantung ❤️</span>
+<p class="text-[10px] text-snow/60 mt-1">Kembali ke permulaan</p>
+</div>
+</div>
+</div>
+<div class="flex justify-end pt-4">
+<button @click="vrExplored = true; saveProgress(); missionStep = 3" class="px-6 py-3 rounded-xl font-bold text-xs bg-gradient-to-r from-cyan-glow to-electric text-navy-base shadow-glow-cyan" type="button">
+                            Teruskan ke Langkah 3: Tanya NOVA AI 🤖
+                        </button>
+</div>
+</div>
+</div>
+<!-- STEP 3: NOVA AI BUDDY -->
+<div class="glass-panel p-8 rounded-3xl space-y-6 max-w-4xl mx-auto border border-violet/30" x-show="missionStep === 3">
+<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-white/10 pb-4">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-violet to-electric flex items-center justify-center text-2xl text-navy-base font-bold shadow-glow-violet">
+                            🤖
+                        </div>
+<div>
+<div class="flex items-center gap-2">
+<h3 class="text-xl font-bold font-heading text-snow">NOVA AI</h3>
+<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-cyan-glow/20 text-cyan-glow border border-cyan-glow/40">AI SEDIA</span>
+</div>
+<p class="text-xs text-snow/70">Rakan Pembelajaran AI Sains Tahun 5 Anda</p>
+</div>
+</div>
+<span class="text-[10px] text-snow/50 italic bg-navy-base/60 px-3 py-1 rounded-full border border-white/10">
+<i class="fa-solid fa-shield-halved text-cyan-glow mr-1"></i> Keselamatan: Jangan kongsi maklumat peribadi
+                    </span>
+</div>
+<!-- Chat Messages Box -->
+<div class="h-80 overflow-y-auto glass-card p-4 rounded-2xl space-y-3 border border-white/10 text-xs" id="chatContainer">
+<template :key="index" x-for="(msg, index) in chatMessages">
+<div :class="msg.sender === 'user' ? 'justify-end' : 'justify-start'" class="flex">
+<div :class="msg.sender === 'user' ? 'bg-electric text-navy-base font-medium rounded-2xl rounded-tr-none' : 'glass-panel text-snow border border-violet/30 rounded-2xl rounded-tl-none'" class="max-w-md p-3 space-y-1">
+<p class="leading-relaxed" x-text="msg.text"></p>
+<span class="text-[9px] opacity-60 block text-right" x-text="msg.time"></span>
+</div>
+</div>
+</template>
+</div>
+<!-- Quick Prompts Buttons -->
+<div class="space-y-2">
+<span class="text-[11px] font-semibold text-violet">Soalan Pantas:</span>
+<div class="flex flex-wrap gap-2 text-xs">
+<button @click="sendQuickPrompt('Mengapa jantung berdegup?')" class="px-3 py-1.5 rounded-xl glass-card hover:border-cyan-glow text-snow/80 hover:text-cyan-glow transition-all" type="button">
+                            Mengapa jantung berdegup?
+                        </button>
+<button @click="sendQuickPrompt('Apakah fungsi darah?')" class="px-3 py-1.5 rounded-xl glass-card hover:border-cyan-glow text-snow/80 hover:text-cyan-glow transition-all" type="button">
+                            Apakah fungsi darah?
+                        </button>
+<button @click="sendQuickPrompt('Terangkan sistem peredaran darah dengan mudah.')" class="px-3 py-1.5 rounded-xl glass-card hover:border-cyan-glow text-snow/80 hover:text-cyan-glow transition-all" type="button">
+                            Terangkan dengan mudah
+                        </button>
+<button @click="sendQuickPrompt('Beri saya petunjuk untuk misi sel darah.')" class="px-3 py-1.5 rounded-xl glass-card hover:border-cyan-glow text-snow/80 hover:text-cyan-glow transition-all" type="button">
+                            Beri saya petunjuk 💡
+                        </button>
+</div>
+</div>
+<!-- Chat Input Box -->
+<div class="flex gap-2">
+<input @keydown.enter="sendChatMessage()" class="flex-grow px-4 py-3 rounded-xl glass-card text-xs text-snow placeholder-snow/40 border border-white/10 focus:outline-none focus:border-cyan-glow" placeholder="Tanya NOVA apa-apa tentang peredaran darah..." type="text" x-model="userQuery"/>
+<button @click="sendChatMessage()" class="px-5 py-3 rounded-xl bg-gradient-to-r from-violet to-electric font-bold text-xs text-navy-base hover:opacity-90 transition-all shadow-glow-violet" type="button">
+                        Hantar <i class="fa-solid fa-paper-plane ml-1"></i>
+</button>
+</div>
+<div class="flex justify-between items-center pt-4">
+<span class="text-[10px] text-snow/50">NOVA AI • Dikuasakan oleh Gemini • Sambungan langsung</span>
+<button @click="missionStep = 4" class="px-6 py-2.5 rounded-xl font-bold text-xs bg-gradient-to-r from-cyan-glow to-electric text-navy-base shadow-glow-cyan" type="button">
+                        Seterusnya: Permainan Sel Darah 🎮
+                    </button>
+</div>
+</div>
+<!-- STEP 4: BLOOD CELL MISSION MINI-GAME -->
+<div class="glass-panel p-8 rounded-3xl space-y-6 max-w-3xl mx-auto border border-electric/30" x-show="missionStep === 4">
+<div class="text-center space-y-2">
+<span class="px-3 py-1 rounded-full text-[10px] font-bold bg-electric/20 text-electric border border-electric/40">LANGKAH 04 — PERMAINAN MINI INTERAKTIF</span>
+<h3 class="text-2xl font-bold font-heading text-snow">MISI SEL DARAH</h3>
+<p class="text-xs text-snow/70">Anda ialah sel darah merah. Hantar oksigen ke seluruh badan dan lengkapkan laluan peredaran darah.</p>
+</div>
+<!-- Game Canvas Box -->
+<div class="glass-card p-6 rounded-2xl border border-electric/40 space-y-6 bg-navy-deep/90">
+<!-- Level 1 -->
+<div class="space-y-4 text-center" x-show="gameLevel === 1">
+<div class="inline-block px-3 py-1 rounded bg-cyan-glow/10 text-cyan-glow font-bold text-xs">TAHAP 1: Kenal Pasti Organ Pengepam Utama</div>
+<h4 class="text-base font-bold text-snow">Organ manakah yang mengepam darah secara berterusan ke seluruh badan?</h4>
+<div class="grid grid-cols-3 gap-3 pt-2">
+<button @click="handleGameAnswer(1, 'Lungs')" class="p-4 rounded-xl glass-panel hover:border-cyan-glow text-xs font-semibold text-snow" type="button">🫁 Paru-paru</button>
+<button @click="handleGameAnswer(1, 'Heart')" class="p-4 rounded-xl glass-panel hover:border-cyan-glow text-xs font-semibold text-snow border-2 border-cyan-glow/40" type="button">❤️ Jantung</button>
+<button @click="handleGameAnswer(1, 'Stomach')" class="p-4 rounded-xl glass-panel hover:border-cyan-glow text-xs font-semibold text-snow" type="button">🫃 Perut</button>
+</div>
+</div>
+<!-- Level 2 -->
+<div class="space-y-4 text-center" x-show="gameLevel === 2">
+<div class="inline-block px-3 py-1 rounded bg-violet/10 text-violet font-bold text-xs">TAHAP 2: Ikuti Laluan Darah</div>
+<h4 class="text-base font-bold text-snow">Pilih laluan yang betul bagi darah kaya oksigen yang datang dari paru-paru:</h4>
+<div class="space-y-2 pt-2 text-xs">
+<button @click="handleGameAnswer(2, 'wrong1')" class="w-full p-3 rounded-xl glass-panel hover:border-cyan-glow text-left text-snow" type="button">Laluan A: Paru-paru ➔ Badan ➔ Jantung ➔ Paru-paru</button>
+<button @click="handleGameAnswer(2, 'correct')" class="w-full p-3 rounded-xl glass-panel border border-cyan-glow/40 hover:border-cyan-glow text-left text-snow font-semibold" type="button">Laluan B: Paru-paru ➔ Jantung ➔ Badan ➔ Jantung ➔ Paru-paru</button>
+<button @click="handleGameAnswer(2, 'wrong2')" class="w-full p-3 rounded-xl glass-panel hover:border-cyan-glow text-left text-snow" type="button">Laluan C: Jantung ➔ Perut ➔ Otak ➔ Kaki</button>
+</div>
+</div>
+<!-- Level 3 -->
+<div class="space-y-4 text-center" x-show="gameLevel === 3">
+<div class="inline-block px-3 py-1 rounded bg-electric/10 text-electric font-bold text-xs">TAHAP 3: Cabaran Penghantaran Oksigen</div>
+<h4 class="text-base font-bold text-snow">Sel darah merah anda mengambil oksigen di paru-paru dan kembali ke jantung. Ke manakah jantung perlu mengepamnya seterusnya?</h4>
+<div class="grid grid-cols-2 gap-3 pt-2">
+<button @click="handleGameAnswer(3, 'wrong')" class="p-4 rounded-xl glass-panel hover:border-cyan-glow text-xs font-semibold text-snow" type="button">Kembali ke paru-paru dengan segera</button>
+<button @click="handleGameAnswer(3, 'correct')" class="p-4 rounded-xl glass-panel border border-cyan-glow/40 hover:border-cyan-glow text-xs font-semibold text-snow" type="button">Ke seluruh bahagian badan 🧍</button>
+</div>
+</div>
+<!-- Level Complete Celebration -->
+<div class="text-center py-6 space-y-4" x-show="gameLevel === 4">
+<div class="text-5xl animate-bounce">🎉</div>
+<h4 class="text-2xl font-bold text-cyan-glow">MISI BERJAYA!</h4>
+<p class="text-xs text-snow/80">Anda berjaya menghantar oksigen dan melengkapkan perjalanan dalam sistem peredaran darah!</p>
+<div class="flex justify-center gap-4 text-xs pt-2">
+<span class="px-3 py-1.5 rounded-lg glass-card border border-cyan-glow/30 text-cyan-glow font-bold">⭐ Pengetahuan</span>
+<span class="px-3 py-1.5 rounded-lg glass-card border border-violet/30 text-violet font-bold">⭐ Penerokaan</span>
+<span class="px-3 py-1.5 rounded-lg glass-card border border-electric/30 text-electric font-bold">⭐ Misi Selesai</span>
+</div>
+<button @click="missionStep = 5" class="mt-4 px-8 py-3 rounded-xl font-bold text-xs bg-gradient-to-r from-cyan-glow via-electric to-violet text-navy-base shadow-glow-cyan" type="button">
+                            Teruskan ke Kuiz Interaktif 🎯
+                        </button>
+</div>
+<!-- Game Feedback Banner -->
+<div :class="gameFeedbackType === 'success' ? 'bg-cyan-glow/20 text-cyan-glow border border-cyan-glow/40' : 'bg-red-500/20 text-red-300 border border-red-500/40'" class="p-3 rounded-xl text-center text-xs font-semibold" x-show="gameFeedback" x-text="gameFeedback">
+</div>
+</div>
+</div>
+<!-- STEP 5: INTERACTIVE QUIZ -->
+<div class="glass-panel p-8 rounded-3xl space-y-6 max-w-3xl mx-auto border border-cyan-glow/20" x-show="missionStep === 5">
+<div class="text-center space-y-2">
+<span class="px-3 py-1 rounded-full text-[10px] font-bold bg-cyan-glow/20 text-cyan-glow border border-cyan-glow/40">LANGKAH 05 — KUIZ INTERAKTIF</span>
+<h3 class="text-2xl font-bold font-heading text-snow">Semak Kefahaman Anda</h3>
+<p class="text-xs text-snow/70">Uji perkara yang telah anda pelajari melalui pengalaman VR dan NOVA AI.</p>
+</div>
+<div class="space-y-6 pt-4" x-show="!quizSubmitted">
+<template :key="idx" x-for="(q, idx) in quizQuestions">
+<div class="glass-card p-5 rounded-2xl space-y-3 border border-white/10">
+<p class="text-sm font-semibold text-snow" x-text="(idx + 1) + '. ' + q.question"></p>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+<template :key="oIdx" x-for="(opt, oIdx) in q.options">
+<button :class="quizAnswers[idx] === oIdx ? 'bg-electric text-navy-base font-bold' : 'glass-panel text-snow/80 hover:bg-navy-deep/70'" @click="quizAnswers[idx] = oIdx" class="p-3 text-xs rounded-xl text-left border border-white/10 transition-all" type="button">
+<span x-text="opt"></span>
+</button>
+</template>
+</div>
+</div>
+</template>
+<button @click="submitQuiz()" class="w-full py-3.5 rounded-xl font-bold text-navy-base bg-gradient-to-r from-cyan-glow to-violet shadow-glow-cyan hover:opacity-90" type="button">
+                        Hantar Kuiz
+                    </button>
+</div>
+<div class="text-center py-8 space-y-4" x-show="quizSubmitted">
+<div class="w-20 h-20 mx-auto rounded-full bg-electric/20 border-2 border-electric flex items-center justify-center text-3xl text-electric">
+                        🎯
+                    </div>
+<h4 class="text-xl font-bold text-snow">Skor Kuiz Anda</h4>
+<div class="text-4xl font-bold text-cyan-glow" x-text="quizScore + ' / 5'"></div>
+<div :class="quizScore === 5 ? 'text-cyan-glow border border-cyan-glow/40' : 'text-violet border border-violet/40'" class="p-4 rounded-2xl glass-card max-w-md mx-auto text-xs font-semibold">
+<span x-text="quizScore === 5 ? '🏆 Excellent Explorer! Perfect score!' : (quizScore &gt;= 3 ? '👏 Great work! Review one more concept with NOVA.' : '💪 Let’s revisit the VR experience and ask NOVA for help.')"></span>
+</div>
+<div class="flex justify-center gap-3 pt-2">
+<button @click="openNovaModal()" class="px-5 py-2.5 rounded-xl font-bold text-xs glass-card border border-violet/40 text-violet" type="button">
+                            Tanya NOVA 🤖
+                        </button>
+<button @click="missionStep = 6" class="px-6 py-2.5 rounded-xl font-bold text-xs bg-gradient-to-r from-cyan-glow to-electric text-navy-base shadow-glow-cyan" type="button">
+                            Seterusnya: Langkah Cipta 🎨
+                        </button>
+</div>
+</div>
+</div>
+<!-- STEP 6: CREATE -->
+<div class="glass-panel p-8 rounded-3xl space-y-6 max-w-4xl mx-auto border border-violet/30" x-show="missionStep === 6">
+<div class="text-center space-y-2">
+<span class="px-3 py-1 rounded-full text-[10px] font-bold bg-violet/20 text-violet border border-violet/40">LANGKAH 06 — CIPTAAN MURID</span>
+<h3 class="text-2xl font-bold font-heading text-snow">Kini Giliran Anda</h3>
+<p class="text-xs text-snow/70">Hasilkan sesuatu yang menunjukkan apa yang telah anda pelajari tentang peredaran darah.</p>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-4">
+<div :class="selectedCreationType === 'Poster' ? 'border-2 border-cyan-glow bg-cyan-glow/10' : 'border border-white/10'" @click="selectedCreationType = 'Poster'" class="glass-card p-5 rounded-2xl space-y-3 cursor-pointer text-center hover:border-cyan-glow transition-all">
+<div class="text-3xl">🎨</div>
+<h4 class="font-bold text-sm text-snow">POSTER DIGITAL</h4>
+<p class="text-[11px] text-snow/60">Lukis atau reka poster yang menerangkan pergerakan darah.</p>
+</div>
+<div :class="selectedCreationType === 'Video' ? 'border-2 border-cyan-glow bg-cyan-glow/10' : 'border border-white/10'" @click="selectedCreationType = 'Video'" class="glass-card p-5 rounded-2xl space-y-3 cursor-pointer text-center hover:border-cyan-glow transition-all">
+<div class="text-3xl">🎥</div>
+<h4 class="font-bold text-sm text-snow">VIDEO 60 SAAT</h4>
+<p class="text-[11px] text-snow/60">Rakam video penerangan ringkas tentang laluan peredaran darah.</p>
+</div>
+<div :class="selectedCreationType === 'Model' ? 'border-2 border-cyan-glow bg-cyan-glow/10' : 'border border-white/10'" @click="selectedCreationType = 'Model'" class="glass-card p-5 rounded-2xl space-y-3 cursor-pointer text-center hover:border-cyan-glow transition-all">
+<div class="text-3xl">🫀</div>
+<h4 class="font-bold text-sm text-snow">MODEL 3D</h4>
+<p class="text-[11px] text-snow/60">Bina model jantung 3D menggunakan plastisin atau secara digital.</p>
+</div>
+<div :class="selectedCreationType === 'MindMap' ? 'border-2 border-cyan-glow bg-cyan-glow/10' : 'border border-white/10'" @click="selectedCreationType = 'MindMap'" class="glass-card p-5 rounded-2xl space-y-3 cursor-pointer text-center hover:border-cyan-glow transition-all">
+<div class="text-3xl">🧠</div>
+<h4 class="font-bold text-sm text-snow">PETA MINDA</h4>
+<p class="text-[11px] text-snow/60">Susun komponen darah dan fungsinya dalam bentuk carta.</p>
+</div>
+</div>
+<!-- Submission Form -->
+<div class="glass-card p-6 rounded-2xl border border-white/10 space-y-4">
+<h4 class="text-sm font-bold text-cyan-glow">Hantar Hasil Ciptaan Anda (<span x-text="selectedCreationType"></span>)</h4>
+<input class="w-full px-4 py-3 rounded-xl glass-panel text-xs text-snow border border-white/10 focus:outline-none focus:border-cyan-glow" placeholder="Tajuk hasil kerja anda (cth. Poster Perjalanan Aliran Darah)" type="text" x-model="creationTitle"/>
+<div class="p-5 rounded-xl border border-dashed border-cyan-glow/40 text-xs text-snow/70 space-y-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-cyan-glow/10 border border-cyan-glow/30 flex items-center justify-center text-xl">☁️</div>
+<div class="text-left">
+<p class="font-bold text-cyan-glow">Pautkan hasil kerja melalui Google Drive</p>
+<p class="text-[10px] text-snow/50">1. Muat naik hasil ke Drive • 2. Tetapkan akses kepada guru/penilai • 3. Salin dan tampal pautan di bawah.</p>
+</div>
+</div>
+<div class="flex flex-col sm:flex-row gap-2">
+<button @click="openGoogleDrive()" class="px-4 py-2.5 rounded-xl font-bold text-xs glass-card border border-cyan-glow/40 text-cyan-glow hover:bg-cyan-glow/10" type="button">
+<i class="fa-brands fa-google-drive mr-1"></i> Buka Google Drive
+</button>
+<input @change="handleCreationFile($event)" class="hidden" type="file" x-ref="creationFileInput"/>
+<button @click="$refs.creationFileInput.click()" class="px-4 py-2.5 rounded-xl font-bold text-xs glass-card border border-white/15 text-snow/70 hover:border-cyan-glow/40" type="button">
+<i class="fa-solid fa-file mr-1"></i> Catat Nama Fail
+</button>
+</div>
+<p class="text-[10px] text-snow/40" x-show="selectedCreationFileName">Nama fail rujukan: <span class="text-cyan-glow" x-text="selectedCreationFileName"></span> (fail tidak dimuat naik oleh VRAISE)</p>
+<div class="space-y-1 text-left">
+<label class="text-[11px] font-semibold text-violet">Pautan Google Drive / Canva <span class="text-red-300">*</span></label>
+<input class="w-full px-4 py-3 rounded-xl glass-panel text-xs text-snow border border-white/10 focus:outline-none focus:border-cyan-glow" placeholder="https://drive.google.com/..." type="url" x-model="creationLink"/>
+<p class="text-[10px] text-snow/40">Pastikan pautan boleh dibuka oleh guru atau penilai. VRAISE akan merekod pautan ini ke Google Sheets.</p>
+</div>
+</div>
+<button @click="submitCreation()" class="w-full py-3 rounded-xl font-bold text-xs bg-gradient-to-r from-violet to-cyan-glow text-navy-base shadow-glow-violet" type="button">
+                        Hantar Hasil Saya 🚀
+                    </button>
+<div x-show="creationSubmitted && creationLink" class="p-4 rounded-xl bg-cyan-glow/10 border border-cyan-glow/30 text-center space-y-2">
+<p class="text-xs font-bold text-cyan-glow">✅ Hasil kerja telah direkodkan</p>
+<a :href="creationLink" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl glass-card border border-cyan-glow/40 text-cyan-glow text-xs font-bold">
+<i class="fa-brands fa-google-drive"></i> Buka Hasil Kerja
+</a>
+</div>
+</div>
+<div class="flex justify-end pt-2">
+<button @click="missionStep = 7" class="px-6 py-2.5 rounded-xl font-bold text-xs bg-gradient-to-r from-cyan-glow to-electric text-navy-base shadow-glow-cyan" type="button">
+                        Seterusnya: Langkah 7 Refleksi 💡
+                    </button>
+</div>
+</div>
+<!-- STEP 7: REFLECTION -->
+<div class="glass-panel p-8 rounded-3xl space-y-6 max-w-3xl mx-auto border border-cyan-glow/20" x-show="missionStep === 7">
+<div class="text-center space-y-2">
+<span class="px-3 py-1 rounded-full text-[10px] font-bold bg-cyan-glow/20 text-cyan-glow border border-cyan-glow/40">LANGKAH 07 — REFLEKSI</span>
+<h3 class="text-2xl font-bold font-heading text-snow">Refleksi Perjalanan Anda</h3>
+<p class="text-xs text-snow/70">Fikirkan pengalaman yang telah anda lalui dan bagaimana pengalaman itu membantu pembelajaran anda.</p>
+</div>
+<div class="space-y-4 pt-2">
+<div class="space-y-1">
+<label class="text-xs font-semibold text-cyan-glow">1. Apakah perkara baharu yang anda pelajari hari ini?</label>
+<textarea class="w-full p-3 rounded-xl glass-card text-xs text-snow border border-white/10 focus:outline-none focus:border-cyan-glow" placeholder="Saya belajar bahawa..." rows="2" x-model="reflectionAnswers.q1"></textarea>
+</div>
+<div class="space-y-1">
+<label class="text-xs font-semibold text-cyan-glow">2. Bahagian pengalaman VR manakah yang paling membantu anda?</label>
+<textarea class="w-full p-3 rounded-xl glass-card text-xs text-snow border border-white/10 focus:outline-none focus:border-cyan-glow" placeholder="Melihat paparan 360° di dalam jantung membantu saya kerana..." rows="2" x-model="reflectionAnswers.q2"></textarea>
+</div>
+<div class="space-y-1">
+<label class="text-xs font-semibold text-cyan-glow">3. Apakah yang ingin anda terokai seterusnya?</label>
+<textarea class="w-full p-3 rounded-xl glass-card text-xs text-snow border border-white/10 focus:outline-none focus:border-cyan-glow" placeholder="Seterusnya saya ingin belajar..." rows="2" x-model="reflectionAnswers.q3"></textarea>
+</div>
+<button @click="saveReflection()" class="w-full py-3 rounded-xl font-bold text-xs bg-gradient-to-r from-cyan-glow to-electric text-navy-base shadow-glow-cyan" type="button">
+                        Simpan Refleksi
+                    </button>
+<p class="text-[10px] text-center text-snow/40 italic">Nota: Data ini disimpan secara setempat pada peranti ini melalui LocalStorage pelayar.</p>
+</div>
+<div class="flex justify-end pt-2">
+<button @click="missionStep = 8" class="px-6 py-2.5 rounded-xl font-bold text-xs bg-gradient-to-r from-cyan-glow to-violet text-navy-base shadow-glow-cyan" type="button">
+                        Teruskan ke Penilaian Pasca 📝
+                    </button>
+</div>
+</div>
+<!-- STEP 8: POST-ASSESSMENT -->
+<div class="glass-panel p-8 rounded-3xl space-y-6 max-w-3xl mx-auto border border-violet/30" x-show="missionStep === 8">
+<div class="text-center space-y-2">
+<span class="px-3 py-1 rounded-full text-[10px] font-bold bg-violet/20 text-violet border border-violet/40">LANGKAH 08 — PENILAIAN PASCA</span>
+<h3 class="text-2xl font-bold font-heading text-snow">Mari Lihat Apa yang Anda Tahu Sekarang</h3>
+<p class="text-xs text-snow/70">Jawab soalan akhir ini untuk mengukur peningkatan pembelajaran anda selepas melengkapkan misi VR.</p>
+</div>
+<div class="space-y-6 pt-4" x-show="!postTestSubmitted">
+<template :key="idx" x-for="(q, idx) in postTestQuestions">
+<div class="glass-card p-5 rounded-2xl space-y-3 border border-white/10">
+<p class="text-sm font-semibold text-snow" x-text="(idx + 1) + '. ' + q.question"></p>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+<template :key="oIdx" x-for="(opt, oIdx) in q.options">
+<button :class="postTestAnswers[idx] === oIdx ? 'bg-violet text-navy-base font-bold' : 'glass-panel text-snow/80 hover:bg-navy-deep/70'" @click="postTestAnswers[idx] = oIdx" class="p-3 text-xs rounded-xl text-left border border-white/10 transition-all" type="button">
+<span x-text="opt"></span>
+</button>
+</template>
+</div>
+</div>
+</template>
+<button @click="submitPostTest()" class="w-full py-3.5 rounded-xl font-bold text-navy-base bg-gradient-to-r from-violet to-cyan-glow shadow-glow-violet hover:opacity-90" type="button">
+                        Hantar Penilaian Pasca
+                    </button>
+</div>
+<!-- Learning Gain Results Summary -->
+<div class="text-center py-6 space-y-6" x-show="postTestSubmitted">
+<div class="w-20 h-20 mx-auto rounded-full bg-violet/20 border-2 border-violet flex items-center justify-center text-3xl text-violet">
+                        📊
+                    </div>
+<h4 class="text-xl font-bold text-snow">Ringkasan Peningkatan Penilaian</h4>
+<div class="grid grid-cols-3 gap-4 max-w-md mx-auto">
+<div class="glass-card p-4 rounded-xl border border-white/10">
+<span class="text-[10px] text-snow/60 block">Ujian Pra</span>
+<span class="text-xl font-bold text-snow" x-text="preTestScore + '/5'"></span>
+</div>
+<div class="glass-card p-4 rounded-xl border border-white/10">
+<span class="text-[10px] text-snow/60 block">Ujian Pasca</span>
+<span class="text-xl font-bold text-violet" x-text="postTestScore + '/5'"></span>
+</div>
+<div class="glass-card p-4 rounded-xl border border-cyan-glow/40 bg-cyan-glow/10">
+<span class="text-[10px] text-cyan-glow block font-bold">Peningkatan Pembelajaran</span>
+<span class="text-xl font-bold text-cyan-glow" x-text="formatLearningGain()"></span>
+</div>
+</div>
+<button @click="completeMission()" class="px-8 py-3.5 rounded-xl font-bold text-xs bg-gradient-to-r from-cyan-glow via-electric to-violet text-navy-base shadow-glow-cyan" type="button">
+                        Selesaikan Misi 🏆
+                    </button>
+</div>
+</div>
+<!-- STEP 9: MISSION COMPLETE CELEBRATION -->
+<div class="glass-panel p-10 rounded-3xl space-y-8 max-w-2xl mx-auto text-center border-2 border-cyan-glow shadow-glow-cyan" x-show="missionStep === 9">
+<div class="text-6xl animate-bounce">🏆</div>
+<div class="space-y-2">
+<h2 class="text-3xl font-bold font-heading text-cyan-glow gradient-text">MISI SELESAI!</h2>
+<p class="text-base text-snow font-semibold">Anda kini secara rasmi ialah <span class="gradient-text">Peneroka Sains VRAISE</span></p>
+</div>
+<!-- Checklist -->
+<div class="glass-card p-6 rounded-2xl border border-white/10 text-left space-y-3 max-w-md mx-auto text-xs">
+<div class="flex items-center gap-2 text-cyan-glow"><i class="fa-solid fa-circle-check"></i> <span>✓ Pengalaman VR Telah Diterokai</span></div>
+<div class="flex items-center gap-2 text-cyan-glow"><i class="fa-solid fa-circle-check"></i> <span>✓ Interaksi NOVA AI Selesai</span></div>
+<div class="flex items-center gap-2 text-cyan-glow"><i class="fa-solid fa-circle-check"></i> <span>✓ Misi Sel Darah Dikuasai</span></div>
+<div class="flex items-center gap-2 text-cyan-glow"><i class="fa-solid fa-circle-check"></i> <span>✓ Kuiz Selesai (<span x-text="quizScore"></span>/5)</span></div>
+<div class="flex items-center gap-2 text-cyan-glow"><i class="fa-solid fa-circle-check"></i> <span>✓ Hasil Ciptaan Murid Dihantar</span></div>
+<div class="flex items-center gap-2 text-cyan-glow"><i class="fa-solid fa-circle-check"></i> <span>✓ Refleksi Disimpan</span></div>
+</div>
+<!-- Badge -->
+<div class="inline-block p-4 rounded-2xl glass-panel border border-cyan-glow/40 shadow-glow-cyan">
+<div class="text-xs font-bold text-cyan-glow uppercase tracking-widest">LENCANA RASMI DIPEROLEH</div>
+<div class="text-lg font-bold text-snow mt-1">🏅 PENEROKA SAINS VRAISE (TAHUN 5)</div>
+</div>
+<div class="pt-2">
+<button @click="currentView = 'missions'" class="px-8 py-3.5 rounded-xl font-bold text-xs bg-gradient-to-r from-cyan-glow to-electric text-navy-base shadow-glow-cyan" type="button">
+                        Kembali ke Misi Sains
+                    </button>
+</div>
+</div>
+</section>
+<!-- ================= VIEW 4: STUDENT CREATION GALLERY ================= -->
+<section class="max-w-7xl mx-auto px-4 lg:px-8 py-10 space-y-8" x-show="currentView === 'gallery'" x-transition="">
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+<div>
+<span class="px-3 py-1 rounded-full text-xs font-semibold bg-violet/20 text-violet border border-violet/40">PAMERAN HASIL KERJA MURID</span>
+<h2 class="text-3xl font-bold font-heading text-snow mt-1">Galeri Ciptaan VRAISE</h2>
+<p class="text-xs text-snow/70">Contoh hasil kerja dan refleksi murid daripada pengguna rintis Tahun 5.</p>
+</div>
+<div class="px-3 py-1.5 rounded-xl glass-card text-xs text-cyan-glow border border-cyan-glow/30">
+<i class="fa-solid fa-info-circle mr-1"></i> Label: Galeri Sampel (Hasil Demo)
+                </div>
+</div>
+<!-- Filter Buttons -->
+<div class="flex flex-wrap gap-2 text-xs font-medium">
+<button :class="galleryFilter === 'Semua' ? 'bg-cyan-glow text-navy-base font-bold' : 'glass-card text-snow/80'" @click="galleryFilter = 'Semua'" class="px-4 py-2 rounded-xl border border-white/10" type="button">Semua</button>
+<button :class="galleryFilter === 'Posters' ? 'bg-cyan-glow text-navy-base font-bold' : 'glass-card text-snow/80'" @click="galleryFilter = 'Posters'" class="px-4 py-2 rounded-xl border border-white/10" type="button">Poster</button>
+<button :class="galleryFilter === 'Videos' ? 'bg-cyan-glow text-navy-base font-bold' : 'glass-card text-snow/80'" @click="galleryFilter = 'Videos'" class="px-4 py-2 rounded-xl border border-white/10" type="button">Video</button>
+<button :class="galleryFilter === 'Models' ? 'bg-cyan-glow text-navy-base font-bold' : 'glass-card text-snow/80'" @click="galleryFilter = 'Models'" class="px-4 py-2 rounded-xl border border-white/10" type="button">Model</button>
+<button :class="galleryFilter === 'Reflections' ? 'bg-cyan-glow text-navy-base font-bold' : 'glass-card text-snow/80'" @click="galleryFilter = 'Reflections'" class="px-4 py-2 rounded-xl border border-white/10" type="button">Refleksi</button>
+</div>
+<!-- Gallery Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+<!-- Sample Card 1 -->
+<div class="glass-card rounded-2xl overflow-hidden border border-white/10 space-y-3" x-show="galleryFilter === 'Semua' || galleryFilter === 'Posters'">
+<div class="h-44 bg-gradient-to-br from-cyan-glow/20 to-electric/20 flex flex-col items-center justify-center text-center p-4 border-b border-white/10">
+<span class="text-4xl">🎨</span>
+<span class="text-xs font-bold text-cyan-glow mt-2">Poster Digital</span>
+</div>
+<div class="p-5 space-y-2">
+<span class="px-2 py-0.5 rounded text-[10px] bg-cyan-glow/10 text-cyan-glow border border-cyan-glow/30">Contoh Hasil Kerja Murid</span>
+<h4 class="font-bold text-base text-snow">Peta Perjalanan Aliran Darah</h4>
+<p class="text-xs text-snow/60">Rajah berilustrasi yang menunjukkan pergerakan darah beroksigen dan terdeoksigen antara paru-paru, jantung dan badan.</p>
+<div class="text-[10px] text-snow/40 pt-2 border-t border-white/10">Dihantar oleh: AHMAD ZARIL ATOH BIN ABDULLAH (SK Piasau)</div>
+</div>
+</div>
+<!-- Sample Card 2 -->
+<div class="glass-card rounded-2xl overflow-hidden border border-white/10 space-y-3" x-show="galleryFilter === 'Semua' || galleryFilter === 'Models'">
+<div class="h-44 bg-gradient-to-br from-violet/20 to-electric/20 flex flex-col items-center justify-center text-center p-4 border-b border-white/10">
+<span class="text-4xl">🫀</span>
+<span class="text-xs font-bold text-violet mt-2">Model Plastisin 3D</span>
+</div>
+<div class="p-5 space-y-2">
+<span class="px-2 py-0.5 rounded text-[10px] bg-violet/10 text-violet border border-violet/30">Contoh Hasil Kerja Murid</span>
+<h4 class="font-bold text-base text-snow">Ruang Jantung Manusia Saya</h4>
+<p class="text-xs text-snow/60">Model jantung 3D buatan tangan yang menunjukkan ventrikel kanan dan kiri serta salur darah berlabel.</p>
+<div class="text-[10px] text-snow/40 pt-2 border-t border-white/10">Dihantar oleh: ALIY HAZIQ BIN FIQRAM (SK Piasau)</div>
+</div>
+</div>
+<!-- Sample Card 3 -->
+<div class="glass-card rounded-2xl overflow-hidden border border-white/10 space-y-3" x-show="galleryFilter === 'Semua' || galleryFilter === 'Videos'">
+<div class="h-44 bg-gradient-to-br from-electric/20 to-cyan-glow/20 flex flex-col items-center justify-center text-center p-4 border-b border-white/10">
+<span class="text-4xl">🎥</span>
+<span class="text-xs font-bold text-electric mt-2">Video (60 saat)</span>
+</div>
+<div class="p-5 space-y-2">
+<span class="px-2 py-0.5 rounded text-[10px] bg-electric/10 text-electric border border-electric/30">Contoh Hasil Kerja Murid</span>
+<h4 class="font-bold text-base text-snow">60 Saat Bersama Sistem Peredaran Darah</h4>
+<p class="text-xs text-snow/60">Video ringkas oleh murid Tahun 5 yang menerangkan kepentingan penghantaran oksigen semasa aktiviti fizikal.</p>
+<div class="text-[10px] text-snow/40 pt-2 border-t border-white/10">Dihantar oleh: ASHLEY CLARISSA BINTI FRED (SK Piasau)</div>
+</div>
+</div>
+<!-- Sample Card 4 -->
+<div class="glass-card rounded-2xl overflow-hidden border border-white/10 space-y-3" x-show="galleryFilter === 'Semua' || galleryFilter === 'Reflections'">
+<div class="h-44 bg-gradient-to-br from-cyan-glow/20 to-violet/20 flex flex-col items-center justify-center text-center p-4 border-b border-white/10">
+<span class="text-4xl">💡</span>
+<span class="text-xs font-bold text-cyan-glow mt-2">Refleksi Murid</span>
+</div>
+<div class="p-5 space-y-2">
+<span class="px-2 py-0.5 rounded text-[10px] bg-cyan-glow/10 text-cyan-glow border border-cyan-glow/30">Contoh Hasil Kerja Murid</span>
+<h4 class="font-bold text-base text-snow">Refleksi Imersif VR</h4>
+<p class="text-xs text-snow/70 italic">“Pengalaman VR 360° membantu saya memahami bagaimana darah bergerak di dalam jantung dengan lebih jelas berbanding gambar dalam buku teks.”</p>
+<div class="text-[10px] text-snow/40 pt-2 border-t border-white/10">Dihantar oleh: CLEMENT LAUDIKIA JACOB (SK Piasau)</div>
+</div>
+</div>
+</div>
+</section>
+<!-- ================= VIEW 5: MY LEARNING PROGRESS ================= -->
+<section class="max-w-7xl mx-auto px-4 lg:px-8 py-10 space-y-8" x-show="currentView === 'progress'" x-transition="">
+<div class="text-center space-y-2">
+<span class="px-3 py-1 rounded-full text-xs font-semibold bg-cyan-glow/20 text-cyan-glow border border-cyan-glow/40">PAPAN PEMUKA PERIBADI</span>
+<h2 class="text-3xl font-bold font-heading text-snow">Perjalanan Pembelajaran Saya</h2>
+<p class="text-xs text-snow/70">Jejaki kemajuan keseluruhan modul dan peningkatan penilaian anda secara masa nyata.</p>
+</div>
+<div class="glass-panel p-8 rounded-3xl space-y-6 max-w-3xl mx-auto border border-cyan-glow/30">
+<div class="flex justify-between items-center border-b border-white/10 pb-4">
+<div>
+<h3 class="font-bold text-lg text-snow">Misi 02 — Sistem Peredaran Darah</h3>
+<p class="text-xs text-snow/60">Modul Sains Tahun 5</p>
+</div>
+<span class="text-xl font-bold text-cyan-glow" x-text="calculateMissionProgress() + '% Completed'"></span>
+</div>
+<div class="space-y-4 text-xs">
+<div class="flex justify-between items-center p-3 rounded-xl glass-card border border-white/10">
+<span>1. Penilaian Pra</span>
+<span :class="preTestSubmitted ? 'text-cyan-glow font-bold' : 'text-snow/40'" x-text="preTestSubmitted ? 'Completed (' + preTestScore + '/5)' : 'Not Started'"></span>
+</div>
+<div class="flex justify-between items-center p-3 rounded-xl glass-card border border-white/10">
+<span>2. Pengalaman VR</span>
+<span :class="vrExplored ? 'text-cyan-glow font-bold' : 'text-snow/40'" x-text="vrExplored ? 'Completed' : 'Not Started'"></span>
+</div>
+<div class="flex justify-between items-center p-3 rounded-xl glass-card border border-white/10">
+<span>3. Interaksi NOVA AI</span>
+<span :class="novaInteracted ? 'text-cyan-glow font-bold' : 'text-snow/40'" x-text="novaInteracted ? 'Completed' : 'Not Started'"></span>
+</div>
+<div class="flex justify-between items-center p-3 rounded-xl glass-card border border-white/10">
+<span>4. Permainan Misi Sel Darah</span>
+<span :class="gameLevel === 4 ? 'text-cyan-glow font-bold' : 'text-snow/40'" x-text="gameLevel === 4 ? 'Completed (3/3 Stars)' : 'In Progress'"></span>
+</div>
+<div class="flex justify-between items-center p-3 rounded-xl glass-card border border-white/10">
+<span>5. Kuiz Interaktif</span>
+<span :class="quizSubmitted ? 'text-cyan-glow font-bold' : 'text-snow/40'" x-text="quizSubmitted ? 'Completed (' + quizScore + '/5)' : 'Not Started'"></span>
+</div>
+<div class="flex justify-between items-center p-3 rounded-xl glass-card border border-white/10">
+<span>6. Ciptaan Murid</span>
+<span :class="creationSubmitted ? 'text-cyan-glow font-bold' : 'text-snow/40'" x-text="creationSubmitted ? 'Submitted (' + selectedCreationType + ')' : 'Not Started'"></span>
+</div>
+<div class="flex justify-between items-center p-3 rounded-xl glass-card border border-white/10">
+<span>7. Refleksi</span>
+<span :class="reflectionSaved ? 'text-cyan-glow font-bold' : 'text-snow/40'" x-text="reflectionSaved ? 'Saved' : 'Not Started'"></span>
+</div>
+<div class="flex justify-between items-center p-3 rounded-xl glass-card border border-white/10">
+<span>8. Penilaian Pasca</span>
+<span :class="postTestSubmitted ? 'text-cyan-glow font-bold' : 'text-snow/40'" x-text="postTestSubmitted ? 'Completed (' + postTestScore + '/5)' : 'Not Started'"></span>
+</div>
+</div>
+<div class="pt-2">
+<button @click="continueMission()" class="w-full py-3 rounded-xl font-bold text-xs bg-gradient-to-r from-cyan-glow to-electric text-navy-base shadow-glow-cyan" type="button">
+                        Sambung Misi 🚀
+                    </button>
+</div>
+</div>
+</section>
+<!-- ================= VIEW 6: TEACHER INSIGHT ANALYTICS ================= -->
+<section class="max-w-7xl mx-auto px-4 lg:px-8 py-10 space-y-8" x-show="currentView === 'insight'" x-transition="">
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+<div>
+<span class="px-3 py-1 rounded-full text-xs font-semibold bg-violet/20 text-violet border border-violet/40">PORTAL ANALITIK GURU</span>
+<h2 class="text-3xl font-bold font-heading text-snow mt-1">Papan Pemuka Analitik VRAISE</h2>
+<p class="text-xs text-snow/70">Analitik pembelajaran bilik darjah dan penjejakan impak pedagogi secara masa nyata.</p>
+</div>
+<div class="px-3 py-1.5 rounded-xl glass-card text-xs text-cyan-glow border border-cyan-glow/40 font-bold">
+<i class="fa-solid fa-database mr-1"></i> DATA KELAS 5 PRIHATIN
+                </div>
+</div>
+<!-- Metric Cards -->
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+<div class="glass-card p-5 rounded-2xl border border-white/10 space-y-1">
+<span class="text-[10px] text-snow/60 uppercase font-semibold">Pengguna Berdaftar</span>
+<div class="text-2xl font-bold text-cyan-glow">33</div>
+<span class="text-[10px] text-cyan-glow">Kelas 5 Prihatin</span>
+</div>
+<div class="glass-card p-5 rounded-2xl border border-white/10 space-y-1">
+<div class="text-[10px] text-snow/60 uppercase font-semibold">Kadar Penyelesaian VR</div>
+<div class="text-xl font-bold text-electric">Belum Direkod</div>
+<span class="text-[10px] text-electric">Menunggu penggunaan murid</span>
+</div>
+<div class="glass-card p-5 rounded-2xl border border-white/10 space-y-1">
+<div class="text-[10px] text-snow/60 uppercase font-semibold">Purata Ujian Pra</div>
+<div class="text-xl font-bold text-snow">Belum Direkod</div>
+<span class="text-[10px] text-snow/50">Akan dikira daripada 33 murid</span>
+</div>
+<div class="glass-card p-5 rounded-2xl border border-cyan-glow/40 bg-cyan-glow/10 space-y-1">
+<div class="text-[10px] text-cyan-glow uppercase font-bold">Purata Ujian Pasca</div>
+<div class="text-xl font-bold text-cyan-glow">Belum Direkod</div>
+<span class="text-[10px] text-cyan-glow">Learning Gain akan dikira automatik</span>
+</div>
+</div>
+<!-- Analytics Chart Block -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+<!-- Pre vs Post Learning Gain Chart -->
+<div class="lg:col-span-8 glass-panel p-6 rounded-3xl border border-white/10 space-y-4">
+<div class="flex justify-between items-center border-b border-white/10 pb-3">
+<h4 class="font-bold text-sm text-snow">Perbandingan Peningkatan Pembelajaran (Ujian Pra vs Ujian Pasca)</h4>
+<span class="text-[10px] text-snow/40">Menunggu data pilot</span>
+</div>
+<div class="relative h-64 w-full flex items-center justify-center">
+<canvas id="insightChart"></canvas>
+<div class="absolute inset-0 flex items-center justify-center text-center p-6 text-xs text-violet" x-show="chartError" x-text="chartError"></div>
+</div>
+<p class="text-[10px] text-snow/50 text-center">Graf akan dipaparkan selepas Ujian Pra dan Ujian Pasca sebenar direkodkan untuk kelas 5 Prihatin.</p>
+</div>
+<!-- Teacher Quick Summary & Exports -->
+<div class="lg:col-span-4 glass-panel p-6 rounded-3xl border border-white/10 space-y-4 flex flex-col justify-between">
+<div class="space-y-4">
+<h4 class="font-bold text-sm text-cyan-glow">Dapatan Bilik Darjah</h4>
+<div class="space-y-3 text-xs">
+<div class="p-3 rounded-xl glass-card border border-white/10">
+<span class="font-semibold text-snow block">Peningkatan Tertinggi:</span>
+<p class="text-[11px] text-snow/70 mt-0.5">Belum dapat ditentukan sehingga data Ujian Pra dan Ujian Pasca direkodkan.</p>
+</div>
+<div class="p-3 rounded-xl glass-card border border-white/10">
+<span class="font-semibold text-snow block">Penglibatan Sokongan AI:</span>
+<p class="text-[11px] text-snow/70 mt-0.5">Bilangan interaksi NOVA akan direkodkan secara automatik semasa penggunaan sebenar.</p>
+</div>
+<div class="p-3 rounded-xl glass-card border border-white/10">
+<span class="font-semibold text-snow block">Ciptaan Murid:</span>
+<p class="text-[11px] text-snow/70 mt-0.5">Bilangan artifak akan dikira daripada penghantaran sebenar murid 5 Prihatin.</p>
+</div>
+</div>
+</div>
+<div class="pt-2 border-t border-white/10 text-[10px] text-snow/50 space-y-2">
+<p>Data aktiviti boleh dihantar terus ke Google Sheets melalui Google Apps Script. Status sambungan: <span class="font-semibold text-cyan-glow" x-text="syncStatus"></span>.</p>
+<button @click="exportClassReport()" class="w-full py-2.5 rounded-xl font-bold text-xs glass-card border border-cyan-glow/40 text-cyan-glow hover:bg-cyan-glow/10" type="button">
+                            Eksport Laporan Prestasi Kelas (PDF)
+                        </button>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- ================= MODALS ================= -->
+<!-- PROFIL MURID / IDENTITI SESI -->
+<div class="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-navy-base/90 backdrop-blur-md" x-show="profileModalOpen" x-transition x-cloak>
+<div class="glass-panel w-full max-w-lg p-6 rounded-3xl space-y-5 border-2 border-cyan-glow/40 shadow-glow-cyan">
+<div class="flex justify-between items-center border-b border-white/10 pb-3">
+<div>
+<span class="text-[10px] font-bold tracking-widest text-cyan-glow uppercase">VRAISE Data Sync</span>
+<h3 class="font-bold text-xl text-snow font-heading">Profil Murid</h3>
+<p class="text-[11px] text-snow/60 mt-1">Pilih nama daripada senarai rasmi 5 Prihatin supaya skor serta aktiviti direkodkan kepada murid yang betul.</p>
+</div>
+<button @click="profileModalOpen = false" class="text-snow/60 hover:text-snow text-xl" type="button"><i class="fa-solid fa-xmark"></i></button>
+</div>
+<div class="space-y-4">
+<label class="block text-xs font-semibold text-cyan-glow">Pilih Nama Murid 5 Prihatin
+<select x-model="studentId" @change="selectStudentById()" class="mt-2 w-full px-4 py-3 rounded-xl glass-card text-sm text-snow border border-white/10 focus:outline-none focus:border-cyan-glow bg-navy-deep">
+<option value="">— Pilih nama anda —</option>
+<template x-for="student in studentRoster" :key="student.id">
+<option :value="student.id" x-text="student.id + ' • ' + student.name"></option>
+</template>
+</select>
+</label>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+<div class="p-3 rounded-xl glass-card border border-cyan-glow/20">
+<div class="text-[10px] uppercase text-snow/50 font-semibold">Nama Murid</div>
+<div class="text-xs text-snow mt-1 font-semibold" x-text="studentName || 'Belum dipilih'"></div>
+</div>
+<div class="p-3 rounded-xl glass-card border border-electric/20">
+<div class="text-[10px] uppercase text-snow/50 font-semibold">Kelas</div>
+<div class="text-xs text-electric mt-1 font-semibold" x-text="studentClass || '5 Prihatin'"></div>
+</div>
+</div>
+<div class="p-3 rounded-xl glass-card border border-cyan-glow/20 text-[10px] text-snow/60 space-y-1">
+<p><span class="text-cyan-glow font-semibold">ID Murid:</span> <span x-text="studentId || '—'"></span></p>
+<p><span class="text-cyan-glow font-semibold">Session ID:</span> <span x-text="sessionId"></span></p>
+<p><span class="text-cyan-glow font-semibold">Google Sheets:</span> <span x-text="syncStatus"></span></p>
+<p>Senarai pengguna: 33 murid • Kelas 5 Prihatin.</p>
+</div>
+</div>
+<div class="flex flex-col sm:flex-row gap-3">
+<button @click="resetForNewStudent()" class="sm:w-auto px-4 py-3 rounded-xl text-xs font-bold glass-card border border-violet/30 text-violet" type="button">Murid Baharu</button>
+<button @click="saveStudentProfile()" class="flex-1 px-5 py-3 rounded-xl text-xs font-bold bg-gradient-to-r from-cyan-glow via-electric to-violet text-navy-base shadow-glow-cyan" type="button" x-text="pendingAction === 'mission' ? 'Simpan & Mula Misi' : 'Simpan Profil'"></button>
+</div>
+</div>
+</div>
+
+<!-- VR 360 INTERACTIVE SIMULATION MODAL -->
+<div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-navy-base/90 backdrop-blur-md" x-show="vrModalOpen" x-transition="">
+<div class="glass-panel w-full max-w-4xl p-6 rounded-3xl space-y-4 border-2 border-cyan-glow shadow-glow-cyan">
+<div class="flex justify-between items-center border-b border-white/10 pb-3">
+<div class="flex items-center gap-2">
+<span class="text-xl">🥽</span>
+<h3 class="font-bold text-lg text-snow font-heading">Pengalaman Realiti Maya 360° VRAISE</h3>
+</div>
+<button @click="vrModalOpen = false" class="text-snow/60 hover:text-snow text-xl" type="button"><i class="fa-solid fa-xmark"></i></button>
+</div>
+<!-- YouTube VR 360 Interactive Player -->
+<div class="relative w-full h-80 sm:h-96 rounded-2xl bg-navy-base border border-cyan-glow overflow-hidden">
+<iframe src="https://www.youtube.com/embed/4gLeZl64P54?rel=0&modestbranding=1&playsinline=1&enablejsapi=1" title="Pengalaman Realiti Maya 360 VRAISE melalui YouTube" class="w-full h-full border-0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+</div>
+<div class="flex justify-center">
+<button @click="openYouTubeVR()" type="button" class="px-4 py-2 rounded-xl glass-card border border-violet/40 text-violet text-xs font-bold"><i class="fa-brands fa-youtube mr-1"></i> Buka Paparan Penuh di YouTube 360°</button>
+</div>
+<div class="flex justify-between items-center text-xs text-snow/60 pt-2">
+<span>Status VR: YouTube 360° Sedia Digunakan</span>
+<button @click="vrModalOpen = false; vrExplored = true; saveProgress(); missionStep = 3" class="px-5 py-2 rounded-xl font-bold bg-cyan-glow text-navy-base shadow-glow-cyan" type="button">
+                    Teruskan ke NOVA AI 🤖
+                </button>
+</div>
+</div>
+</div>
+<!-- NOVA AI STANDALONE MODAL CHAT -->
+<div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-navy-base/80 backdrop-blur-md" x-show="novaModalOpen" x-transition="">
+<div class="glass-panel w-full max-w-2xl p-6 rounded-3xl space-y-4 border-2 border-violet shadow-glow-violet">
+<div class="flex justify-between items-center border-b border-white/10 pb-3">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-violet/20 border border-violet/40 flex items-center justify-center text-2xl">🤖</div>
+<div>
+<h3 class="font-bold text-base text-snow">Rakan Pembelajaran AI NOVA</h3>
+<p class="text-[10px] text-cyan-glow">Tanya apa-apa tentang Sains Tahun 5</p>
+</div>
+</div>
+<button @click="novaModalOpen = false" class="text-snow/60 hover:text-snow text-xl" type="button"><i class="fa-solid fa-xmark"></i></button>
+</div>
+<!-- Chat Container -->
+<div class="h-64 overflow-y-auto glass-card p-4 rounded-2xl space-y-3 text-xs border border-white/10" id="novaModalChatContainer">
+<template :key="index" x-for="(msg, index) in chatMessages">
+<div :class="msg.sender === 'user' ? 'justify-end' : 'justify-start'" class="flex">
+<div :class="msg.sender === 'user' ? 'bg-electric text-navy-base font-medium rounded-2xl rounded-tr-none' : 'glass-panel text-snow border border-violet/30 rounded-2xl rounded-tl-none'" class="max-w-md p-3 space-y-1">
+<p x-text="msg.text"></p>
+<span class="text-[9px] opacity-60 block text-right" x-text="msg.time"></span>
+</div>
+</div>
+</template>
+</div>
+<div class="flex gap-2">
+<input @keydown.enter="sendChatMessage()" class="flex-grow px-4 py-2.5 rounded-xl glass-card text-xs text-snow border border-white/10 focus:outline-none focus:border-violet" placeholder="Taip soalan Sains anda..." type="text" x-model="userQuery"/>
+<button @click="sendChatMessage()" :disabled="novaLoading" :class="novaLoading ? 'opacity-50 cursor-not-allowed' : ''" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-violet to-electric font-bold text-xs text-navy-base" type="button"><span x-text="novaLoading ? 'Menunggu…' : 'Hantar'"></span></button>
+</div>
+</div>
+</div>
+<!-- FOOTER -->
+<footer class="glass-panel border-t border-cyan-glow/20 mt-16 py-10 px-4 lg:px-8 text-xs text-snow/60">
+<div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
+<div class="space-y-2">
+<div class="flex items-center space-x-2">
+<div class="w-7 h-7 rounded-lg bg-gradient-to-br from-cyan-glow to-violet flex items-center justify-center text-navy-base font-bold">
+<i class="fa-solid fa-cube text-xs"></i>
+</div>
+<span class="text-lg font-bold font-heading text-snow">VRAISE EduHub</span>
+</div>
+<p class="text-[11px] text-snow/50">Ekosistem Pembelajaran Imersif Berkuasa AI</p>
+<p class="text-cyan-glow font-semibold text-[11px]">Slogan: Melangkaui Pembelajaran. Menuju Pengalaman.</p>
+</div>
+<div class="text-center space-y-1">
+<p class="font-semibold text-snow">Inovasi Digital &amp; AI dalam Pendidikan</p>
+<p class="text-[10px] text-snow/40">Subjek Fokus: Sains Tahun 5 — Rintis Sistem Peredaran Darah</p>
+</div>
+<div class="text-right space-y-1">
+<p class="text-cyan-glow">VR • AI • Interaktif • Gamifikasi</p>
+<p class="text-[10px] text-snow/40">Direka untuk Pertandingan Inovasi Sekolah Rendah</p>
+</div>
+</div>
+</footer>
+<!-- ALPINE.JS APPLICATION LOGIC -->
+<script>
+        // ============================================================
+        // VRAISE DATA CONNECTION
+        // Selepas deploy Google Apps Script sebagai Web App, tampal URL /exec di bawah.
+        // Contoh: https://script.google.com/macros/s/XXXXXXXXXXXX/exec
+        // ============================================================
+        const VRAISE_CONFIG = {
+            GOOGLE_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbyc9TctzoWdPLOBgpxZIHP51aHXizDJasq6LvDTg09QkT_7pibP7LoXCEC9aU-2F8jUsA/exec'
+        };
+
+        function appData() {
+            return {
+                // View State
+                currentView: 'home',
+                mobileMenuOpen: false,
+                missionStep: 1,
+                galleryFilter: 'Semua',
+
+                // Modals
+                vrModalOpen: false,
+                novaModalOpen: false,
+                profileModalOpen: false,
+                pendingAction: 'profile',
+                pendingMissionStep: 1,
+
+                // Google Sheets / Student Identity
+                googleScriptUrl: VRAISE_CONFIG.GOOGLE_SCRIPT_URL,
+                studentId: '',
+                studentName: '',
+                studentClass: '5 Prihatin',
+                studentRoster: [
+                    {
+                                        "id": "5P-01",
+                                        "name": "AHMAD ZARIL ATOH BIN ABDULLAH",
+                                        "kelas": "5 Prihatin"
+                    },
+                    {
+                                        "id": "5P-02",
+                                        "name": "ALIY HAZIQ BIN FIQRAM",
+                                        "kelas": "5 Prihatin"
+                    },
+                    {
+                                        "id": "5P-03",
+                                        "name": "ASHLEY CLARISSA BINTI FRED",
+                                        "kelas": "5 Prihatin"
+                    },
+                    {
+                                        "id": "5P-04",
+                                        "name": "CLEMENT LAUDIKIA JACOB",
+                                        "kelas": "5 Prihatin"
+                    },
+                    {
+                                        "id": "5P-05",
+                                        "name": "DANI QHUEZAIRRY BIN MASARI",
+                                        "kelas": "5 Prihatin"
+                    },
+                    {
+                                        "id": "5P-06",
+                                        "name": "DANIEL EVANS BOBBY",
+                                        "kelas": "5 Prihatin"
+                    },
+                    {
+                                        "id": "5P-07",
+                                        "name": "DWAYNE LENIN TURAGIS",
+                                        "kelas": "5 Prihatin"
+                    },
+                    {
+                                        "id": "5P-08",
+                                        "name": "ELDORA ELYSA BINTI NIOL",
+                                        "kelas": "5 Prihatin"
+                    },
+                    {
+                                        "id": "5P-09",
+                                        "name": "EVEA CAITLYN JHONSON",
+                                        "kelas": "5 Prihatin"
+                    },
+                    {
+                                        "id": "5P-10",
+                                        "name": "FARHANAH BINTI SOPHIAN",
+                                        "kelas": "5 Prihatin"
+                    },
+                    {
+                                        "id": "5P-11",
+                                        "name": "HAZMI NIZAM BIN HAZIRIN",
+                                        "kelas": "5 Prihatin"
+                    },
+                    {
+                                        "id": "5P-12",
+                                        "name": "HANIS WAHIDATUL AISYAH BINTI ABDULLAH",
+                                        "kelas": "5 Prihatin"
+                    },
+                    {
+                                        "id": "5P-13",
+                                        "name": "HEINZ VAELETTO MEGABAET",
+                                        "kelas": "5 Prihatin"
+                    },
+                    {
+                                        "id": "5P-14",
+                                        "name": "JACORESON REMON BIN JAUDI",
+                                        "kelas": "5 Prihatin"
+                    },
+                    {
+                                        "id": "5P-15",
+                                        "name": "MARVEEN GYLL EDMUND S.MONDORUSUN",
+                                        "kelas": "5 Prihatin"
+                    },
+                    {
+                                        "id": "5P-16",
+                                        "name": "MAYVENESSA MAIK",
+                                        "kelas": "5 Prihatin"
+                    },
+                    {
+                                        "id": "5P-17",
+                                        "name": "MOHAMMAD AQEEF HIDAYAT BIN MOHD. AZMIR",
+                                        "kelas": "5 Prihatin"
+                    },
+                    {
+                                        "id": "5P-18",
+                                        "name": "MOHAMMAD FIRDAUS BIN ABDULLAH",
+                                        "kelas": "5 Prihatin"
+                    },
+                    {
+                                        "id": "5P-19",
+                                        "name": "MOHAMMAD KHADAPI BIN ABDULLAH",
+                                        "kelas": "5 Prihatin"
+                    },
+                    {
+                                        "id": "5P-20",
+                                        "name": "MUHAMAD ARYAN ZIKRY BIN JAMRI",
+                                        "kelas": "5 Prihatin"
+                    },
+                    {
+                                        "id": "5P-21",
+                                        "name": "MUHAMMAD HELMIE BIN HERWAN",
+                                        "kelas": "5 Prihatin"
+                    },
+                    {
+                                        "id": "5P-22",
+                                        "name": "MUHAMMAD NA`IM HADWAN BIN MOHD.NAZRI",
+                                        "kelas": "5 Prihatin"
+                    },
+                    {
+                                        "id": "5P-23",
+                                        "name": "NADIM BIN AWANG MAAROF",
+                                        "kelas": "5 Prihatin"
+                    },
+                    {
+                                        "id": "5P-24",
+                                        "name": "NORSYAFIZAH BINTI SALIZAL",
+                                        "kelas": "5 Prihatin"
+                    },
+                    {
+                                        "id": "5P-25",
+                                        "name": "NUR ALLYA FYEA ALLESYA BINTI ABDULLAH",
+                                        "kelas": "5 Prihatin"
+                    },
+                    {
+                                        "id": "5P-26",
+                                        "name": "NUR AZIMA ISMA BINTI ISKHANDAR",
+                                        "kelas": "5 Prihatin"
+                    },
+                    {
+                                        "id": "5P-27",
+                                        "name": "NUR DAMIA AISYAH",
+                                        "kelas": "5 Prihatin"
+                    },
+                    {
+                                        "id": "5P-28",
+                                        "name": "NUR FARISAH FAEZAH BINTI JOHN",
+                                        "kelas": "5 Prihatin"
+                    },
+                    {
+                                        "id": "5P-29",
+                                        "name": "NUR HUMAIRA BINTI AZMAN",
+                                        "kelas": "5 Prihatin"
+                    },
+                    {
+                                        "id": "5P-30",
+                                        "name": "PRINCE CHARLIE ALBERN LINUS",
+                                        "kelas": "5 Prihatin"
+                    },
+                    {
+                                        "id": "5P-31",
+                                        "name": "SHIERLLYMISYA BINTI YASHIER",
+                                        "kelas": "5 Prihatin"
+                    },
+                    {
+                                        "id": "5P-32",
+                                        "name": "WANA DAMIA BINTI MOHD FAIRUL",
+                                        "kelas": "5 Prihatin"
+                    },
+                    {
+                                        "id": "5P-33",
+                                        "name": "NASRIYAH FARWIZAH BINTI AB. NASIP",
+                                        "kelas": "5 Prihatin"
+                    }
+],
+                sessionId: '',
+                syncStatus: 'Belum disambung',
+                lastSyncAt: '',
+
+                // Game & Assessment States
+                preTestQuestions: [
+                    { question: "Apakah organ utama yang mengepam darah ke seluruh tubuh manusia?", options: ["Jantung", "Paru-paru", "Hati", "Ginjal"], correct: 0 },
+                    { question: "Darah yang kaya dengan Oksigen diangkut dari mana ke jantung?", options: ["Kulit", "Paru-paru", "Usus", "Kaki"], correct: 1 },
+                    { question: "Apakah fungsi utama sel darah merah?", options: ["Melawan kuman", "Membawa oksigen", "Membekukan darah", "Pencernaan makanan"], correct: 1 },
+                    { question: "Salur darah manakah membawa darah keluar dari jantung?", options: ["Vena", "Arteri", "Kapilari", "Saraf"], correct: 1 },
+                    { question: "Apakah gas yang diserap oleh darah semasa di paru-paru?", options: ["Karbon dioksida", "Nitrogen", "Oksigen", "Hidrogen"], correct: 2 },
+                ],
+                preTestAnswers: {},
+                preTestSubmitted: false,
+                preTestScore: 0,
+
+                quizQuestions: [
+                    { question: "Apakah tugas jantung dalam sistem peredaran darah?", options: ["Mengepam darah", "Mengunyah makanan", "Menyerap air", "Bernafas"], correct: 0 },
+                    { question: "Darah membawa apa untuk sel-sel di seluruh badan?", options: ["Oksigen & Nutrien", "Karbon Dioksida sahaja", "Air kencing", "Udara kotor"], correct: 0 },
+                    { question: "Apakah jenis salur darah yang paling halus dalam badan?", options: ["Arteri", "Vena", "Kapilari", "Tendon"], correct: 2 },
+                    { question: "Laluan darah terdeoksigen (kaya CO2) adalah dari badan ke...", options: ["Paru-paru ➔ Jantung", "Jantung ➔ Paru-paru", "Hati ➔ Ginjal", "Otak ➔ Kaki"], correct: 1 },
+                    { question: "Mengapa sistem peredaran darah sangat penting?", options: ["Mengekalkan kelangsungan hidup sel", "Untuk membantu kita berlari", "Supaya tulang kuat", "Untuk menghasilkan rambut"], correct: 0 }
+                ],
+                quizAnswers: {},
+                quizSubmitted: false,
+                quizScore: 0,
+
+                postTestQuestions: [
+                    { question: "Organ manakah mengepam darah tanpa henti?", options: ["Jantung", "Otak", "Paru-paru", "Perut"], correct: 0 },
+                    { question: "Apakah bahan utama yang diangkut oleh sel darah merah ke seluruh badan?", options: ["Oksigen", "Laktosa", "Karbon dioksida", "Glukosa kotor"], correct: 0 },
+                    { question: "Darah dari paru-paru kaya dengan gas apa?", options: ["Karbon Monoksida", "Oksigen", "Helium", "Nitrogen"], correct: 1 },
+                    { question: "Laluan peredaran darah yang betul dari paru-paru ialah...", options: ["Paru-paru ➔ Jantung ➔ Seluruh Badan", "Paru-paru ➔ Kaki ➔ Jantung", "Jantung ➔ Perut ➔ Paru-paru", "Badan ➔ Paru-paru ➔ Hati"], correct: 0 },
+                    { question: "Apakah yang berlaku sekiranya sistem peredaran darah terganggu?", options: ["Tisu badan kekurangan oksigen", "Badan menjadi makin tinggi", "Kulit bertukar hijau", "Gigi menjadi lebih kuat"], correct: 0 }
+                ],
+                postTestAnswers: {},
+                postTestSubmitted: false,
+                postTestScore: 0,
+
+                // Completion State
+                vrExplored: false,
+                novaInteracted: false,
+                creationSubmitted: false,
+                reflectionSaved: false,
+                missionCompleted: false,
+
+                // Mini Game State
+                gameLevel: 1,
+                gameFeedback: '',
+                gameFeedbackType: 'success',
+
+                // Student Creation
+                selectedCreationType: 'Poster',
+                creationTitle: '',
+                creationLink: '',
+                selectedCreationFileName: '',
+
+                // Reflection
+                reflectionAnswers: {
+                    q1: '',
+                    q2: '',
+                    q3: ''
+                },
+
+                // NOVA AI Chat State
+                userQuery: '',
+                novaLoading: false,
+                chatMessages: [
+                    { sender: 'nova', text: 'Hai! Saya NOVA, rakan pembelajaran AI anda. Ada soalan tentang Sistem Peredaran Darah Manusia?', time: '10:00 AM' }
+                ],
+
+                // Init Chart
+                chartInitialized: false,
+                chartError: '',
+
+                // Helper Methods
+                initApp() {
+                    this.studentId = this.safeStorageGet('vraise_student_id') || '';
+                    this.studentName = this.safeStorageGet('vraise_student_name') || '';
+                    this.studentClass = '5 Prihatin';
+                    if (this.studentId) this.selectStudentById(false);
+                    this.sessionId = this.safeStorageGet('vraise_session_id') || this.generateSessionId();
+                    this.safeStorageSet('vraise_session_id', this.sessionId);
+                    this.syncStatus = this.isGoogleSheetConfigured() ? 'Sedia diselaraskan' : 'Belum disambung';
+
+                    // Restore saved progress safely. LocalStorage can be unavailable in some preview/sandbox modes.
+                    const saved = this.safeStorageGet('vraise_progress');
+                    if (saved) {
+                        try {
+                            const data = JSON.parse(saved);
+                            this.preTestAnswers = data.preTestAnswers || {};
+                            this.preTestSubmitted = Boolean(data.preTestSubmitted);
+                            this.preTestScore = Number(data.preTestScore || 0);
+                            this.quizAnswers = data.quizAnswers || {};
+                            this.quizSubmitted = Boolean(data.quizSubmitted);
+                            this.quizScore = Number(data.quizScore || 0);
+                            this.postTestAnswers = data.postTestAnswers || {};
+                            this.postTestSubmitted = Boolean(data.postTestSubmitted);
+                            this.postTestScore = Number(data.postTestScore || 0);
+                            this.vrExplored = Boolean(data.vrExplored);
+                            this.novaInteracted = Boolean(data.novaInteracted);
+                            this.gameLevel = Number(data.gameLevel || 1);
+                            this.selectedCreationType = data.selectedCreationType || 'Poster';
+                            this.creationTitle = data.creationTitle || '';
+                            this.creationLink = data.creationLink || '';
+                            this.selectedCreationFileName = data.selectedCreationFileName || '';
+                            this.creationSubmitted = Boolean(data.creationSubmitted);
+                            this.reflectionAnswers = data.reflectionAnswers || { q1: '', q2: '', q3: '' };
+                            this.reflectionSaved = Boolean(data.reflectionSaved);
+                            this.missionCompleted = Boolean(data.missionCompleted);
+                        } catch (error) {
+                            console.warn('VRAISE: kemajuan tersimpan tidak dapat dipulihkan.', error);
+                        }
+                    } else {
+                        // Backward compatibility with the earlier legacy key.
+                        const savedPreScore = this.safeStorageGet('vraise_preScore');
+                        if (savedPreScore !== null) {
+                            this.preTestScore = Number(savedPreScore) || 0;
+                            this.preTestSubmitted = true;
+                        }
+                    }
+
+                    this.$watch('currentView', (value) => {
+                        this.mobileMenuOpen = false;
+                        if (value === 'insight') {
+                            this.$nextTick(() => this.renderChart());
+                        }
+                    });
+                },
+
+                safeStorageGet(key) {
+                    try {
+                        return window.localStorage ? localStorage.getItem(key) : null;
+                    } catch (error) {
+                        console.warn('VRAISE: bacaan LocalStorage tidak tersedia.', error);
+                        return null;
+                    }
+                },
+
+                safeStorageSet(key, value) {
+                    try {
+                        if (window.localStorage) localStorage.setItem(key, value);
+                        return true;
+                    } catch (error) {
+                        console.warn('VRAISE: penulisan LocalStorage tidak tersedia.', error);
+                        return false;
+                    }
+                },
+
+                safeStorageRemove(key) {
+                    try {
+                        if (window.localStorage) localStorage.removeItem(key);
+                    } catch (error) {
+                        console.warn('VRAISE: pemadaman LocalStorage tidak tersedia.', error);
+                    }
+                },
+
+                generateSessionId() {
+                    if (window.crypto && typeof window.crypto.randomUUID === 'function') {
+                        return `VRAISE-${window.crypto.randomUUID()}`;
+                    }
+                    return `VRAISE-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
+                },
+
+                isGoogleSheetConfigured() {
+                    const url = String(this.googleScriptUrl || '').trim();
+                    return /^https:\/\/script\.google\.com\/macros\/s\/.+\/exec$/i.test(url);
+                },
+
+                openProfileModal(action = 'profile', step = 1) {
+                    this.pendingAction = action;
+                    this.pendingMissionStep = Math.min(9, Math.max(1, Number(step) || 1));
+                    this.profileModalOpen = true;
+                },
+
+                selectStudentById(updateStorage = false) {
+                    const selected = this.studentRoster.find(student => student.id === this.studentId);
+                    if (!selected) {
+                        this.studentName = '';
+                        this.studentClass = '5 Prihatin';
+                        return;
+                    }
+                    this.studentName = selected.name;
+                    this.studentClass = selected.kelas;
+                    if (updateStorage) {
+                        this.safeStorageSet('vraise_student_id', this.studentId);
+                        this.safeStorageSet('vraise_student_name', this.studentName);
+                        this.safeStorageSet('vraise_student_class', this.studentClass);
+                    }
+                },
+
+                saveStudentProfile() {
+                    this.selectStudentById();
+                    if (!String(this.studentId || '').trim() || !String(this.studentName || '').trim()) {
+                        alert('Sila pilih nama murid 5 Prihatin daripada senarai.');
+                        return;
+                    }
+                    this.studentClass = '5 Prihatin';
+                    this.safeStorageSet('vraise_student_id', this.studentId);
+                    this.safeStorageSet('vraise_student_name', this.studentName);
+                    this.safeStorageSet('vraise_student_class', this.studentClass);
+                    this.safeStorageSet('vraise_session_id', this.sessionId);
+                    const action = this.pendingAction;
+                    const step = this.pendingMissionStep;
+                    this.pendingAction = 'profile';
+                    this.profileModalOpen = false;
+                    this.logAktiviti('PROFIL_MURID_DISIMPAN', { langkah: 0, catatan: 'Profil murid disimpan pada peranti.' });
+                    if (action === 'mission') this.beginFeaturedMission(step);
+                },
+
+                resetForNewStudent() {
+                    if (!confirm('Mulakan sesi untuk murid baharu? Kemajuan pada peranti ini akan dikosongkan. Data yang sudah dihantar ke Google Sheets tidak dipadam.')) return;
+                    this.studentId = '';
+                    this.studentName = '';
+                    this.studentClass = '5 Prihatin';
+                    this.sessionId = this.generateSessionId();
+                    this.preTestAnswers = {};
+                    this.preTestSubmitted = false;
+                    this.preTestScore = 0;
+                    this.quizAnswers = {};
+                    this.quizSubmitted = false;
+                    this.quizScore = 0;
+                    this.postTestAnswers = {};
+                    this.postTestSubmitted = false;
+                    this.postTestScore = 0;
+                    this.vrExplored = false;
+                    this.novaInteracted = false;
+                    this.gameLevel = 1;
+                    this.gameFeedback = '';
+                    this.selectedCreationType = 'Poster';
+                    this.creationTitle = '';
+                    this.creationLink = '';
+                    this.selectedCreationFileName = '';
+                    this.creationSubmitted = false;
+                    this.reflectionAnswers = { q1: '', q2: '', q3: '' };
+                    this.reflectionSaved = false;
+                    this.missionCompleted = false;
+                    this.missionStep = 1;
+                    this.safeStorageRemove('vraise_progress');
+                    this.safeStorageRemove('vraise_preScore');
+                    this.safeStorageRemove('vraise_student_id');
+                    this.safeStorageRemove('vraise_student_name');
+                    this.safeStorageRemove('vraise_student_class');
+                    this.safeStorageSet('vraise_session_id', this.sessionId);
+                    this.pendingAction = 'profile';
+                    this.profileModalOpen = true;
+                },
+
+                async hantarKeGoogleSheet(data = {}) {
+                    if (!this.isGoogleSheetConfigured()) {
+                        this.syncStatus = 'Belum disambung';
+                        return false;
+                    }
+
+                    const payload = {
+                        app: 'VRAISE EduHub',
+                        action: data.action || 'activity',
+                        sessionId: this.sessionId || this.generateSessionId(),
+                        studentId: this.studentId || '',
+                        nama: this.studentName || '',
+                        kelas: this.studentClass || '',
+                        aktiviti: data.aktiviti || '',
+                        langkah: data.langkah ?? this.missionStep ?? '',
+                        skor: data.skor ?? '',
+                        jumlahSoalan: data.jumlahSoalan ?? '',
+                        nilai: data.nilai ?? '',
+                        kemajuan: this.calculateMissionProgress(),
+                        catatan: data.catatan || '',
+                        pautan: data.pautan || '',
+                        jenisHasil: data.jenisHasil || '',
+                        tajukHasil: data.tajukHasil || '',
+                        namaFail: data.namaFail || '',
+                        jawapan: data.jawapan || '',
+                        refleksi1: data.refleksi1 || '',
+                        refleksi2: data.refleksi2 || '',
+                        refleksi3: data.refleksi3 || '',
+                        userAgent: navigator.userAgent || ''
+                    };
+
+                    try {
+                        this.syncStatus = 'Menghantar...';
+                        await fetch(this.googleScriptUrl, {
+                            method: 'POST',
+                            mode: 'no-cors',
+                            redirect: 'follow',
+                            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                            body: JSON.stringify(payload),
+                            keepalive: true
+                        });
+                        this.lastSyncAt = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                        this.syncStatus = 'Data dihantar';
+                        return true;
+                    } catch (error) {
+                        console.error('VRAISE: gagal menghantar data ke Google Sheets.', error);
+                        this.syncStatus = 'Gagal dihantar';
+                        return false;
+                    }
+                },
+
+                logAktiviti(aktiviti, data = {}) {
+                    return this.hantarKeGoogleSheet({ action: 'activity', aktiviti, ...data });
+                },
+
+                async tanyaNOVA(question) {
+                    if (!this.isGoogleSheetConfigured()) {
+                        throw new Error('Sambungan Apps Script belum dikonfigurasi.');
+                    }
+
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 30000);
+
+                    const payload = {
+                        action: 'nova',
+                        app: 'VRAISE EduHub',
+                        sessionId: this.sessionId || this.generateSessionId(),
+                        studentId: this.studentId || '',
+                        studentName: this.studentName || '',
+                        nama: this.studentName || '',
+                        kelas: this.studentClass || '5 Prihatin',
+                        question: String(question || '').trim()
+                    };
+
+                    try {
+                        const response = await fetch(this.googleScriptUrl, {
+                            method: 'POST',
+                            redirect: 'follow',
+                            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                            body: JSON.stringify(payload),
+                            signal: controller.signal
+                        });
+
+                        const responseText = await response.text();
+                        let data;
+                        try {
+                            data = JSON.parse(responseText);
+                        } catch (_) {
+                            throw new Error('Respons NOVA bukan JSON yang sah. Pastikan deployment Apps Script telah dikemas kini.');
+                        }
+
+                        if (data && data.success === false) {
+                            throw new Error(data.error || data.message || 'NOVA tidak dapat menjawab.');
+                        }
+
+                        const reply =
+                            data?.reply ||
+                            data?.result?.reply ||
+                            data?.data?.reply ||
+                            data?.result?.data?.reply ||
+                            '';
+
+                        if (!reply) {
+                            throw new Error('Jawapan NOVA kosong. Semak fungsi doPost dan case "nova" pada Apps Script.');
+                        }
+
+                        this.lastSyncAt = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                        this.syncStatus = 'NOVA tersambung';
+                        return String(reply).replace(/\*\*/g, '').replace(/^#{1,6}\s*/gm, '').trim();
+                    } finally {
+                        clearTimeout(timeoutId);
+                    }
+                },
+
+                openGoogleDrive() {
+                    window.open('https://drive.google.com/drive/my-drive', '_blank', 'noopener,noreferrer');
+                },
+
+                isValidCreationLink(value) {
+                    try {
+                        const url = new URL(String(value || '').trim());
+                        return url.protocol === 'https:' && (
+                            /(^|\.)drive\.google\.com$/i.test(url.hostname) ||
+                            /(^|\.)docs\.google\.com$/i.test(url.hostname) ||
+                            /(^|\.)canva\.com$/i.test(url.hostname)
+                        );
+                    } catch (_) {
+                        return false;
+                    }
+                },
+
+                saveProgress() {
+                    const data = {
+                        preTestAnswers: this.preTestAnswers,
+                        preTestSubmitted: this.preTestSubmitted,
+                        preTestScore: this.preTestScore,
+                        quizAnswers: this.quizAnswers,
+                        quizSubmitted: this.quizSubmitted,
+                        quizScore: this.quizScore,
+                        postTestAnswers: this.postTestAnswers,
+                        postTestSubmitted: this.postTestSubmitted,
+                        postTestScore: this.postTestScore,
+                        vrExplored: this.vrExplored,
+                        novaInteracted: this.novaInteracted,
+                        gameLevel: this.gameLevel,
+                        selectedCreationType: this.selectedCreationType,
+                        creationTitle: this.creationTitle,
+                        creationLink: this.creationLink,
+                        selectedCreationFileName: this.selectedCreationFileName,
+                        creationSubmitted: this.creationSubmitted,
+                        reflectionAnswers: this.reflectionAnswers,
+                        reflectionSaved: this.reflectionSaved,
+                        missionCompleted: this.missionCompleted
+                    };
+                    this.safeStorageSet('vraise_progress', JSON.stringify(data));
+                },
+
+                startFeaturedMission(step = 1) {
+                    const normalizedStep = Math.min(9, Math.max(1, Number(step) || 1));
+                    if (!String(this.studentId || '').trim() || !String(this.studentName || '').trim()) {
+                        this.openProfileModal('mission', normalizedStep);
+                        return;
+                    }
+                    this.beginFeaturedMission(normalizedStep);
+                },
+
+                beginFeaturedMission(step = 1) {
+                    this.currentView = 'active-mission';
+                    this.missionStep = Math.min(9, Math.max(1, Number(step) || 1));
+                    this.mobileMenuOpen = false;
+                    const aktiviti = this.calculateMissionProgress() > 0 ? 'SAMBUNG_MISI' : 'MULA_MISI';
+                    this.logAktiviti(aktiviti, { langkah: this.missionStep, catatan: 'Sistem Peredaran Darah Manusia' });
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                },
+
+                continueMission() {
+                    let nextStep = 9;
+                    if (!this.preTestSubmitted) nextStep = 1;
+                    else if (!this.vrExplored) nextStep = 2;
+                    else if (!this.novaInteracted) nextStep = 3;
+                    else if (this.gameLevel !== 4) nextStep = 4;
+                    else if (!this.quizSubmitted) nextStep = 5;
+                    else if (!this.creationSubmitted) nextStep = 6;
+                    else if (!this.reflectionSaved) nextStep = 7;
+                    else if (!this.postTestSubmitted) nextStep = 8;
+                    this.startFeaturedMission(nextStep);
+                },
+
+                calculateMissionProgress() {
+                    let total = 0;
+                    if (this.preTestSubmitted) total += 12;
+                    if (this.vrExplored) total += 12;
+                    if (this.novaInteracted) total += 12;
+                    if (this.gameLevel === 4) total += 16;
+                    if (this.quizSubmitted) total += 16;
+                    if (this.creationSubmitted) total += 12;
+                    if (this.reflectionSaved) total += 10;
+                    if (this.postTestSubmitted) total += 10;
+                    return Math.min(100, total);
+                },
+
+                allQuestionsAnswered(answers, count) {
+                    return Array.from({ length: count }, (_, idx) => answers[idx] !== undefined && answers[idx] !== null).every(Boolean);
+                },
+
+                submitPreTest() {
+                    if (!this.allQuestionsAnswered(this.preTestAnswers, this.preTestQuestions.length)) {
+                        alert('Sila jawab kesemua 5 soalan Penilaian Pra sebelum menghantar.');
+                        return;
+                    }
+                    let score = 0;
+                    this.preTestQuestions.forEach((q, idx) => {
+                        if (this.preTestAnswers[idx] === q.correct) score++;
+                    });
+                    this.preTestScore = score;
+                    this.preTestSubmitted = true;
+                    this.safeStorageSet('vraise_preScore', String(score));
+                    this.saveProgress();
+                    this.logAktiviti('UJIAN_PRA', {
+                        langkah: 1,
+                        skor,
+                        jumlahSoalan: this.preTestQuestions.length,
+                        nilai: `${score}/${this.preTestQuestions.length}`,
+                        jawapan: JSON.stringify(this.preTestAnswers)
+                    });
+                },
+
+                submitQuiz() {
+                    if (!this.allQuestionsAnswered(this.quizAnswers, this.quizQuestions.length)) {
+                        alert('Sila jawab semua 5 soalan kuiz sebelum menghantar.');
+                        return;
+                    }
+                    let score = 0;
+                    this.quizQuestions.forEach((q, idx) => {
+                        if (this.quizAnswers[idx] === q.correct) score++;
+                    });
+                    this.quizScore = score;
+                    this.quizSubmitted = true;
+                    this.saveProgress();
+                    this.logAktiviti('KUIZ', {
+                        langkah: 5,
+                        skor,
+                        jumlahSoalan: this.quizQuestions.length,
+                        nilai: `${score}/${this.quizQuestions.length}`,
+                        jawapan: JSON.stringify(this.quizAnswers)
+                    });
+                },
+
+                submitPostTest() {
+                    if (!this.allQuestionsAnswered(this.postTestAnswers, this.postTestQuestions.length)) {
+                        alert('Sila jawab kesemua 5 soalan Penilaian Pasca sebelum menghantar.');
+                        return;
+                    }
+                    let score = 0;
+                    this.postTestQuestions.forEach((q, idx) => {
+                        if (this.postTestAnswers[idx] === q.correct) score++;
+                    });
+                    this.postTestScore = score;
+                    this.postTestSubmitted = true;
+                    this.saveProgress();
+                    this.logAktiviti('UJIAN_PASCA', {
+                        langkah: 8,
+                        skor,
+                        jumlahSoalan: this.postTestQuestions.length,
+                        nilai: `${score}/${this.postTestQuestions.length}`,
+                        catatan: `Peningkatan skor: ${score - this.preTestScore}`,
+                        jawapan: JSON.stringify(this.postTestAnswers)
+                    });
+                },
+
+                formatLearningGain() {
+                    const gain = this.postTestScore - this.preTestScore;
+                    return gain > 0 ? `+${gain}` : String(gain);
+                },
+
+                handleGameAnswer(level, choice) {
+                    // Ignore stale/double clicks from a previous level.
+                    if (level !== this.gameLevel) return;
+
+                    if (level === 1) {
+                        if (choice === 'Heart') {
+                            this.gameFeedback = 'Betul! Jantung ialah organ utama yang mengepam darah. Memasuki Tahap 2...';
+                            this.gameFeedbackType = 'success';
+                            setTimeout(() => {
+                                this.gameLevel = 2;
+                                this.gameFeedback = '';
+                                this.saveProgress();
+                            }, 650);
+                        } else {
+                            this.gameFeedback = 'Kurang tepat. Cuba lagi! Fikirkan organ yang mengepam.';
+                            this.gameFeedbackType = 'error';
+                        }
+                    } else if (level === 2) {
+                        if (choice === 'correct') {
+                            this.gameFeedback = 'Syabas! Laluan darah beroksigen ialah Paru-paru ➔ Jantung ➔ Badan. Memasuki Tahap 3...';
+                            this.gameFeedbackType = 'success';
+                            setTimeout(() => {
+                                this.gameLevel = 3;
+                                this.gameFeedback = '';
+                                this.saveProgress();
+                            }, 650);
+                        } else {
+                            this.gameFeedback = 'Laluan tidak tepat. Ingat: Darah dari paru-paru perlu balik ke jantung dahulu.';
+                            this.gameFeedbackType = 'error';
+                        }
+                    } else if (level === 3) {
+                        if (choice === 'correct') {
+                            this.gameFeedback = 'Tahniah! Oksigen berjaya dihantar ke seluruh badan!';
+                            this.gameFeedbackType = 'success';
+                            setTimeout(() => {
+                                this.gameLevel = 4;
+                                this.gameFeedback = '';
+                                this.saveProgress();
+                                this.logAktiviti('GAME_SELESAI', { langkah: 4, nilai: 'Tahap 1-3 selesai' });
+                            }, 650);
+                        } else {
+                            this.gameFeedback = 'Cuba lagi! Badan memerlukan oksigen untuk bertenaga.';
+                            this.gameFeedbackType = 'error';
+                        }
+                    }
+                },
+
+                handleCreationFile(event) {
+                    const file = event?.target?.files?.[0];
+                    if (!file) return;
+                    this.selectedCreationFileName = file.name;
+                    this.creationSubmitted = false;
+                },
+
+                handleCreationDrop(event) {
+                    const file = event?.dataTransfer?.files?.[0];
+                    if (!file) return;
+                    this.selectedCreationFileName = file.name;
+                    this.creationSubmitted = false;
+                },
+
+                submitCreation() {
+                    if (!this.creationTitle.trim()) {
+                        alert('Sila masukkan tajuk hasil kerja anda!');
+                        return;
+                    }
+                    if (!this.creationLink.trim()) {
+                        alert('Sila muat naik hasil ke Google Drive dan tampal pautannya sebelum menghantar.');
+                        return;
+                    }
+                    if (!this.isValidCreationLink(this.creationLink)) {
+                        alert('Pautan tidak sah. Gunakan pautan Google Drive, Google Docs/Slides atau Canva yang bermula dengan https://');
+                        return;
+                    }
+
+                    this.creationSubmitted = true;
+                    this.saveProgress();
+                    const source = this.creationLink.trim();
+                    this.hantarKeGoogleSheet({
+                        action: 'creation',
+                        aktiviti: 'HASIL_MURID',
+                        langkah: 6,
+                        nilai: this.selectedCreationType,
+                        jenisHasil: this.selectedCreationType,
+                        tajukHasil: this.creationTitle.trim(),
+                        namaFail: this.selectedCreationFileName,
+                        pautan: source,
+                        catatan: 'Pautan hasil murid melalui Google Drive/Canva'
+                    });
+                    alert(`Hasil kerja (${this.selectedCreationType}: ${this.creationTitle}) berjaya direkodkan. Pautan telah dihantar ke pangkalan data VRAISE.`);
+                },
+
+                saveReflection() {
+                    const values = Object.values(this.reflectionAnswers).map(value => String(value || '').trim());
+                    if (values.some(value => !value)) {
+                        alert('Sila lengkapkan ketiga-tiga soalan refleksi sebelum menyimpan.');
+                        return;
+                    }
+                    this.reflectionSaved = true;
+                    this.saveProgress();
+                    this.hantarKeGoogleSheet({
+                        action: 'reflection',
+                        aktiviti: 'REFLEKSI',
+                        langkah: 7,
+                        refleksi1: this.reflectionAnswers.q1,
+                        refleksi2: this.reflectionAnswers.q2,
+                        refleksi3: this.reflectionAnswers.q3,
+                        nilai: 'Refleksi lengkap'
+                    });
+                    alert('Refleksi anda telah berjaya disimpan!');
+                },
+
+                completeMission() {
+                    if (!this.postTestSubmitted) {
+                        alert('Sila lengkapkan Penilaian Pasca terlebih dahulu.');
+                        this.missionStep = 8;
+                        return;
+                    }
+                    this.missionCompleted = true;
+                    this.missionStep = 9;
+                    this.saveProgress();
+                    this.logAktiviti('MISI_SELESAI', {
+                        langkah: 9,
+                        skor: this.postTestScore,
+                        nilai: '100%',
+                        catatan: `Ujian Pra ${this.preTestScore}/5 → Ujian Pasca ${this.postTestScore}/5`
+                    });
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                },
+
+                openVRModal() {
+                    this.vrExplored = true;
+                    this.vrModalOpen = true;
+                    this.saveProgress();
+                    this.logAktiviti('BUKA_VR', { langkah: 2, nilai: 'YouTube VR 360° dibuka dalam VRAISE' });
+                },
+
+                openYouTubeVR() {
+                    this.vrExplored = true;
+                    this.saveProgress();
+                    this.logAktiviti('BUKA_YOUTUBE_VR', { langkah: 2, nilai: 'YouTube VR 360° dibuka pada paparan penuh' });
+                    window.open('https://www.youtube.com/watch?v=4gLeZl64P54', '_blank', 'noopener,noreferrer');
+                },
+
+                openNovaModal() {
+                    this.novaModalOpen = true;
+                    this.logAktiviti('BUKA_NOVA_AI', { langkah: 3, nilai: 'NOVA AI dibuka' });
+                    this.$nextTick(() => {
+                        const input = document.querySelector('[x-model="userQuery"]');
+                        if (input) input.focus();
+                    });
+                },
+
+                sendQuickPrompt(promptText) {
+                    this.userQuery = promptText;
+                    this.sendChatMessage();
+                },
+
+                scrollChatsToBottom() {
+                    this.$nextTick(() => {
+                        ['chatContainer', 'novaModalChatContainer'].forEach((id) => {
+                            const container = document.getElementById(id);
+                            if (container) container.scrollTop = container.scrollHeight;
+                        });
+                    });
+                },
+
+                async sendChatMessage() {
+                    const rawQuery = String(this.userQuery || '').trim();
+                    if (!rawQuery || this.novaLoading) return;
+
+                    if (!this.studentId || !this.studentName) {
+                        alert('Sila pilih profil murid dahulu supaya interaksi NOVA boleh direkodkan dengan betul.');
+                        this.openProfileModal('profile');
+                        return;
+                    }
+
+                    const timeNow = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                    this.chatMessages.push({ sender: 'user', text: rawQuery, time: timeNow });
+                    this.userQuery = '';
+                    this.novaInteracted = true;
+                    this.novaLoading = true;
+                    this.saveProgress();
+
+                    const pendingIndex = this.chatMessages.length;
+                    this.chatMessages.push({ sender: 'nova', text: 'NOVA sedang berfikir…', time: '' });
+                    this.scrollChatsToBottom();
+
+                    try {
+                        const novaResponse = await this.tanyaNOVA(rawQuery);
+                        this.chatMessages[pendingIndex] = {
+                            sender: 'nova',
+                            text: novaResponse,
+                            time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                        };
+                    } catch (error) {
+                        console.error('VRAISE NOVA:', error);
+                        this.syncStatus = 'NOVA gagal disambung';
+                        this.chatMessages[pendingIndex] = {
+                            sender: 'nova',
+                            text: 'Maaf, NOVA tidak dapat disambungkan sekarang. Sila cuba lagi atau maklumkan kepada guru.',
+                            time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                        };
+                    } finally {
+                        this.novaLoading = false;
+                        this.scrollChatsToBottom();
+                    }
+                },
+
+                exportClassReport() {
+                    const generated = new Date().toLocaleString('ms-MY');
+                    const reportHtml = `<!DOCTYPE html>
+<html><head><meta charset="utf-8"><title>Laporan Prestasi Kelas VRAISE</title>
+<style>
+body{font-family:Arial,sans-serif;color:#E5F5FF;padding:36px;line-height:1.5;background:radial-gradient(circle at top left, rgba(93,242,228,.12), transparent 22%),radial-gradient(circle at top right, rgba(180,140,255,.12), transparent 24%),linear-gradient(135deg,#030712 0%,#06111E 48%,#0A1930 100%)}h1{margin-bottom:4px;color:#8FFFF7;text-shadow:0 0 10px rgba(93,242,228,.18)}h2{margin-top:28px;color:#5DF2E4}table{width:100%;border-collapse:collapse;margin-top:12px;background:rgba(7,18,34,.65)}th,td{border:1px solid rgba(148,163,184,.35);padding:9px;text-align:left}th{background:rgba(93,242,228,.12);color:#CFFAFE}.metric{display:inline-block;margin:6px 14px 6px 0;padding:10px 14px;border:1px solid rgba(93,242,228,.25);border-radius:8px;background:rgba(7,18,34,.6);box-shadow:0 0 14px rgba(93,242,228,.06)}.small{font-size:12px;color:#A5B4C7}@media print{button{display:none}}
+</style></head><body>
+<h1>VRAISE EduHub — Laporan Prestasi Kelas</h1>
+<div class="small">Sains Tahun 5 • Kelas 5 Prihatin • 33 pengguna berdaftar • Dijana ${generated}</div>
+<h2>Gambaran Keseluruhan</h2>
+<div class="metric"><b>Pengguna Berdaftar</b><br>33</div>
+<div class="metric"><b>Penyelesaian VR</b><br>Belum Direkod</div>
+<div class="metric"><b>Purata Ujian Pra</b><br>Belum Direkod</div>
+<div class="metric"><b>Purata Ujian Pasca</b><br>Belum Direkod</div>
+<h2>Peningkatan Pembelajaran</h2>
+<table><thead><tr><th>Indikator</th><th>Status</th></tr></thead><tbody>
+<tr><td>Ujian Pra</td><td>Belum Direkod</td></tr>
+<tr><td>Pengalaman VR</td><td>Belum Direkod</td></tr>
+<tr><td>Interaksi NOVA AI</td><td>Belum Direkod</td></tr>
+<tr><td>Kuiz</td><td>Belum Direkod</td></tr>
+<tr><td>Ujian Pasca</td><td>Belum Direkod</td></tr>
+<tr><td>Learning Gain</td><td>Belum dapat dikira</td></tr>
+</tbody></table>
+<h2>Dapatan Bilik Darjah</h2>
+<ul><li>33 murid 5 Prihatin telah didaftarkan sebagai pengguna VRAISE.</li><li>Prestasi akan diisi selepas penggunaan sebenar.</li><li>Google Sheets akan menyimpan bukti aktiviti dan penilaian setiap murid.</li></ul>
+<p class="small">Gunakan dialog Cetak pada pelayar dan pilih “Simpan sebagai PDF”.</p>
+<script>window.onload=()=>setTimeout(()=>window.print(),150);<\/script>
+</body></html>`;
+
+                    const reportWindow = window.open('', '_blank', 'width=900,height=700');
+                    if (!reportWindow) {
+                        alert('Popup disekat oleh pelayar. Sila benarkan pop-up untuk mengeksport laporan PDF.');
+                        return;
+                    }
+                    reportWindow.document.open();
+                    reportWindow.document.write(reportHtml);
+                    reportWindow.document.close();
+                },
+
+                renderChart() {
+                    if (this.chartInitialized) return;
+                    const ctx = document.getElementById('insightChart');
+                    if (!ctx) return;
+                    this.chartError = 'Belum ada data kelas. Graf akan dijana selepas Ujian Pra dan Ujian Pasca sebenar 5 Prihatin direkodkan.';
+                    this.chartInitialized = true;
+                }
+            }
+        }
+    </script>
+</body>
+</html>
