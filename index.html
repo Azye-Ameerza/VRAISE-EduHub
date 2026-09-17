@@ -2514,6 +2514,35 @@ body{font-family:Arial,sans-serif;color:#E5F5FF;padding:36px;line-height:1.5;bac
                     reportWindow.document.write(reportHtml);
                     reportWindow.document.close();
                 },
+async loadDashboardData() {
+  try {
+    const response = await fetch(
+      `${this.googleScriptUrl}?action=dashboard`,
+      { method: 'GET', redirect: 'follow' }
+    );
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    if (!data.success) {
+      throw new Error(data.error || 'Data dashboard tidak dapat dimuatkan.');
+    }
+
+    this.dashboardData = data;
+
+    console.log('VRAISE Dashboard berjaya dimuatkan:', data);
+
+    return data;
+
+  } catch (error) {
+    console.error('VRAISE Dashboard Error:', error);
+    this.dashboardData = null;
+    return null;
+  }
+},
 
                 renderChart() {
                     if (this.chartInitialized) return;
