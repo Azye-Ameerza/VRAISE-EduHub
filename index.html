@@ -2636,31 +2636,28 @@ this.chartError = '';
     this.insightChartInstance.destroy();
   }
 
-  this.insightChartInstance = new Chart(ctx, {
+this.insightChartInstance = new Chart(ctx, {
     type: 'bar',
 
     data: {
-      labels: ['Ujian Pra', 'Ujian Pasca'],
-      datasets: [{
-        label: 'Purata Skor',
-       data: [
-    adaPre ? pre : 0,
-    adaPost ? post : 0
-],
-
-        backgroundColor: [
-          'rgba(34, 211, 238, 0.75)',
-          'rgba(168, 85, 247, 0.75)'
-        ],
-
-        borderColor: [
-          'rgba(34, 211, 238, 1)',
-          'rgba(168, 85, 247, 1)'
-        ],
-
-        borderWidth: 2,
-        borderRadius: 12
-      }]
+        labels: ['Ujian Pra', 'Ujian Pasca'],
+        datasets: [{
+            label: 'Purata Skor',
+            data: [
+                adaPre ? pre : 0,
+                adaPost ? post : 0
+            ],
+            backgroundColor: [
+                'rgba(34, 211, 238, 0.75)',
+                'rgba(168, 85, 247, 0.75)'
+            ],
+            borderColor: [
+                'rgba(34, 211, 238, 1)',
+                'rgba(168, 85, 247, 1)'
+            ],
+            borderWidth: 2,
+            borderRadius: 12
+        }]
     },
 
     options: {
