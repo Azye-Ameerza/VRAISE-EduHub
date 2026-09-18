@@ -8,7 +8,8 @@
 <!-- VRAISE FINAL VERIFIED | GEMINI NOVA + GOOGLE DRIVE LINK + GOOGLE SHEETS | 2026-09-17 -->
 <!-- Tailwind CSS -->
 <script src="https://cdn.tailwindcss.com"></script>
-<script>
+   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script>
         tailwind.config = {
             darkMode: 'class',
             theme: {
@@ -2597,15 +2598,116 @@ async loadDashboardData() {
   }
 },
 
-                renderChart() {
-                    if (this.chartInitialized) return;
-                    const ctx = document.getElementById('insightChart');
-                    if (!ctx) return;
-                    this.chartError = 'Belum ada data kelas. Graf akan dijana selepas Ujian Pra dan Ujian Pasca sebenar 5 Prihatin direkodkan.';
-                    this.chartInitialized = true;
-                }
+renderChart() {
+  const canvas = document.getElementById('insightChart');
+  if (!canvas) return;
+
+  const data = this.dashboardData;
+
+  if (!data) {
+    this.chartError = 'Data dashboard belum tersedia.';
+    return;
+  }
+
+  const pre = parseFloat(data.purataUjianPra);
+  const post = parseFloat(data.purataUjianPasca);
+
+  if (isNaN(pre) || isNaN(post)) {
+    this.chartError = 'Data Ujian Pra dan Ujian Pasca belum lengkap.';
+    return;
+  }
+
+  if (typeof Chart === 'undefined') {
+    this.chartError = 'Chart.js belum berjaya dimuatkan.';
+    console.error('Chart.js tidak tersedia.');
+    return;
+  }
+
+  this.chartError = '';
+
+  const ctx = canvas.getContext('2d');
+
+  if (this.insightChartInstance) {
+    this.insightChartInstance.destroy();
+  }
+
+  this.insightChartInstance = new Chart(ctx, {
+    type: 'bar',
+
+    data: {
+      labels: ['Ujian Pra', 'Ujian Pasca'],
+      datasets: [{
+        label: 'Purata Skor',
+        data: [pre, post],
+
+        backgroundColor: [
+          'rgba(34, 211, 238, 0.75)',
+          'rgba(168, 85, 247, 0.75)'
+        ],
+
+        borderColor: [
+          'rgba(34, 211, 238, 1)',
+          'rgba(168, 85, 247, 1)'
+        ],
+
+        borderWidth: 2,
+        borderRadius: 12
+      }]
+    },
+
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+
+      animation: {
+        duration: 1200
+      },
+
+      plugins: {
+        legend: {
+          display: false
+        },
+
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              return 'Purata: ' + context.raw.toFixed(2) + '/5';
             }
+          }
         }
+      },
+
+      scales: {
+        y: {
+          beginAtZero: true,
+          min: 0,
+          max: 5,
+          ticks: {
+            stepSize: 1,
+            color: '#cbd5e1'
+          },
+          grid: {
+            color: 'rgba(255,255,255,0.08)'
+          }
+        },
+
+        x: {
+          ticks: {
+            color: '#f8fafc'
+          },
+          grid: {
+            display: false
+          }
+        }
+      }
+    }
+  });
+
+  console.log('Graf VRAISE berjaya dijana:', {
+    pra: pre,
+    pasca: post
+  });
+},
     </script>
 </body>
 </html>
