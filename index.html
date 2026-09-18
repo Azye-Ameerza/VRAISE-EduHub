@@ -2609,13 +2609,18 @@ renderChart() {
     return;
   }
 
-  const pre = parseFloat(data.purataUjianPra);
-  const post = parseFloat(data.purataUjianPasca);
+const pre = parseFloat(data.purataUjianPra);
+const post = parseFloat(data.purataUjianPasca);
 
-  if (isNaN(pre) || isNaN(post)) {
-    this.chartError = 'Data Ujian Pra dan Ujian Pasca belum lengkap.';
+const adaPre = Number.isFinite(pre);
+const adaPost = Number.isFinite(post);
+
+if (!adaPre && !adaPost) {
+    this.chartError = 'Belum ada data penilaian murid.';
     return;
-  }
+}
+
+this.chartError = '';
 
   if (typeof Chart === 'undefined') {
     this.chartError = 'Chart.js belum berjaya dimuatkan.';
@@ -2638,7 +2643,10 @@ renderChart() {
       labels: ['Ujian Pra', 'Ujian Pasca'],
       datasets: [{
         label: 'Purata Skor',
-        data: [pre, post],
+       data: [
+    adaPre ? pre : 0,
+    adaPost ? post : 0
+],
 
         backgroundColor: [
           'rgba(34, 211, 238, 0.75)',
