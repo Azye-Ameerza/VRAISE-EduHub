@@ -1309,6 +1309,11 @@
 </template>
 </select>
 </label>
+<label class="block text-xs font-semibold text-cyan-glow">Kod Akses Murid (diberikan oleh guru)
+<input x-model="cloudAccessCode" type="password" autocomplete="off" spellcheck="false" maxlength="16" placeholder="Masukkan kod akses peribadi" class="mt-2 w-full px-4 py-3 rounded-xl glass-card text-sm text-snow border border-white/10 focus:outline-none focus:border-cyan-glow bg-navy-deep" />
+</label>
+<p class="text-xs text-amber-200/90" x-show="cloudLoading">Sedang mengesahkan kod dan memuatkan kemajuan cloud…</p>
+<p class="text-xs text-snow/70" x-text="cloudStatusMessage"></p>
 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
 <div class="p-3 rounded-xl glass-card border border-cyan-glow/20">
 <div class="text-[10px] uppercase text-snow/50 font-semibold">Nama Murid</div>
@@ -1328,7 +1333,7 @@
 </div>
 <div class="flex flex-col sm:flex-row gap-3">
 <button @click="resetForNewStudent()" class="sm:w-auto px-4 py-3 rounded-xl text-xs font-bold glass-card border border-violet/30 text-violet" type="button">Murid Baharu</button>
-<button @click="saveStudentProfile()" class="flex-1 px-5 py-3 rounded-xl text-xs font-bold bg-gradient-to-r from-cyan-glow via-electric to-violet text-navy-base shadow-glow-cyan" type="button" x-text="pendingAction === 'mission' ? 'Simpan & Mula Misi' : 'Simpan Profil'"></button>
+<button @click="saveStudentProfile()" :disabled="cloudLoading" class="flex-1 px-5 py-3 rounded-xl text-xs font-bold bg-gradient-to-r from-cyan-glow via-electric to-violet text-navy-base shadow-glow-cyan" type="button" x-text="pendingAction === 'mission' ? 'Simpan & Mula Misi' : 'Simpan Profil'"></button>
 </div>
 </div>
 </div>
@@ -1615,6 +1620,13 @@
                 sessionId: '',
                 syncStatus: 'Belum disambung',
                 lastSyncAt: '',
+                cloudAccessCode: '',
+                cloudAuthenticated: false,
+                cloudLoading: false,
+                cloudStatusMessage: '',
+                cloudSyncTimer: null,
+                cloudSaving: false,
+                cloudPendingProgress: null,
 
                 // Game & Assessment States
                 preTestQuestions: [
@@ -1690,54 +1702,29 @@
 
                 // Helper Methods
                 initApp() {
-                        this.loadDashboardData();
-                    this.studentId = this.safeStorageGet('vraise_student_id') || '';
-                    this.studentName = this.safeStorageGet('vraise_student_name') || '';
-                    this.studentClass = '5 Prihatin';
-                    if (this.studentId) this.selectStudentById(false);
+                    this.loadDashboardData();
                     this.sessionId = this.safeStorageGet('vraise_session_id') || this.generateSessionId();
                     this.safeStorageSet('vraise_session_id', this.sessionId);
                     this.syncStatus = this.isGoogleSheetConfigured() ? 'Sedia diselaraskan' : 'Belum disambung';
                     if (this.isGoogleSheetConfigured()) this.loadGalleryData(false);
-
-                    // Restore saved progress safely. LocalStorage can be unavailable in some preview/sandbox modes.
-                   const saved = this.studentId
-    ? this.safeStorageGet(`vraise_progress_${this.studentId}`)
-    : null;
-                    if (saved) {
+                    this.studentId = this.safeStorageGet('vraise_student_id') || '';
+                    if (this.studentId) {
+                        this.selectStudentById(false);
                         try {
-                            const data = JSON.parse(saved);
-                            this.preTestAnswers = data.preTestAnswers || {};
-                            this.preTestSubmitted = Boolean(data.preTestSubmitted);
-                            this.preTestScore = Number(data.preTestScore || 0);
-                            this.quizAnswers = data.quizAnswers || {};
-                            this.quizSubmitted = Boolean(data.quizSubmitted);
-                            this.quizScore = Number(data.quizScore || 0);
-                            this.postTestAnswers = data.postTestAnswers || {};
-                            this.postTestSubmitted = Boolean(data.postTestSubmitted);
-                            this.postTestScore = Number(data.postTestScore || 0);
-                            this.vrExplored = Boolean(data.vrExplored);
-                            this.novaInteracted = Boolean(data.novaInteracted);
-                            this.gameLevel = Number(data.gameLevel || 1);
-                            this.selectedCreationType = data.selectedCreationType || 'Poster';
-                            this.creationTitle = data.creationTitle || '';
-                            this.creationLink = data.creationLink || '';
-                            this.selectedCreationFileName = data.selectedCreationFileName || '';
-                            this.creationSubmitted = Boolean(data.creationSubmitted);
-                            this.reflectionAnswers = data.reflectionAnswers || { q1: '', q2: '', q3: '' };
-                            this.reflectionSaved = Boolean(data.reflectionSaved);
-                            this.missionCompleted = Boolean(data.missionCompleted);
-                        } catch (error) {
-                            console.warn('VRAISE: kemajuan tersimpan tidak dapat dipulihkan.', error);
+                            this.cloudAccessCode = sessionStorage.getItem('vraise_access_' + this.studentId) || '';
+                        } catch (_) { this.cloudAccessCode = ''; }
+                        if (this.cloudAccessCode) {
+                            this.loadCloudProgress().catch(error => {
+                                this.cloudStatusMessage = error.message || 'Cloud belum tersedia.';
+                                this.profileModalOpen = true;
+                            });
+                        } else {
+                            this.profileModalOpen = true;
                         }
-                   
                     }
-
-                    this.$watch('currentView', (value) => {
+                    this.$watch('currentView', value => {
                         this.mobileMenuOpen = false;
-                        if (value === 'insight') {
-                            this.$nextTick(() => this.renderChart());
-                        }
+                        if (value === 'insight') this.$nextTick(() => this.renderChart());
                     });
                 },
 
@@ -1786,113 +1773,155 @@
                     this.profileModalOpen = true;
                 },
 
-              selectStudentById(updateStorage = false) {
-    const selected = this.studentRoster.find(
-        student => student.id === this.studentId
-    );
+                clearStudentProgress() {
+                    this.preTestAnswers = {};
+                    this.preTestSubmitted = false;
+                    this.preTestScore = 0;
+                    this.quizAnswers = {};
+                    this.quizSubmitted = false;
+                    this.quizScore = 0;
+                    this.postTestAnswers = {};
+                    this.postTestSubmitted = false;
+                    this.postTestScore = 0;
+                    this.vrExplored = false;
+                    this.novaInteracted = false;
+                    this.gameLevel = 1;
+                    this.creationSubmitted = false;
+                    this.creationTitle = '';
+                    this.creationLink = '';
+                    this.selectedCreationFileName = '';
+                    this.reflectionAnswers = { q1: '', q2: '', q3: '' };
+                    this.reflectionSaved = false;
+                    this.missionCompleted = false;
+                    this.missionStep = 1;
+                },
 
-    if (!selected) {
-        this.studentName = '';
-        this.studentClass = '5 Prihatin';
-        return;
-    }
+                applyStudentProgress(data) {
+                    if (!data || typeof data !== 'object') return;
+                    this.preTestAnswers = data.preTestAnswers || {};
+                    this.preTestSubmitted = Boolean(data.preTestSubmitted);
+                    this.preTestScore = Number(data.preTestScore || 0);
+                    this.quizAnswers = data.quizAnswers || {};
+                    this.quizSubmitted = Boolean(data.quizSubmitted);
+                    this.quizScore = Number(data.quizScore || 0);
+                    this.postTestAnswers = data.postTestAnswers || {};
+                    this.postTestSubmitted = Boolean(data.postTestSubmitted);
+                    this.postTestScore = Number(data.postTestScore || 0);
+                    this.vrExplored = Boolean(data.vrExplored);
+                    this.novaInteracted = Boolean(data.novaInteracted);
+                    this.gameLevel = Math.max(1, Math.min(4, Number(data.gameLevel || 1)));
+                    this.selectedCreationType = data.selectedCreationType || 'Poster';
+                    this.creationTitle = data.creationTitle || '';
+                    this.creationLink = data.creationLink || '';
+                    this.selectedCreationFileName = data.selectedCreationFileName || '';
+                    this.creationSubmitted = Boolean(data.creationSubmitted);
+                    this.reflectionAnswers = data.reflectionAnswers || { q1: '', q2: '', q3: '' };
+                    this.reflectionSaved = Boolean(data.reflectionSaved);
+                    this.missionCompleted = Boolean(data.missionCompleted);
+                    this.missionStep = this.missionCompleted ? 9 : 1;
+                },
 
-    this.studentName = selected.name;
-    this.studentClass = selected.kelas;
+                selectStudentById() {
+                    const selected = this.studentRoster.find(student => student.id === this.studentId);
+                    this.studentName = selected ? selected.name : '';
+                    this.studentClass = selected ? selected.kelas : '5 Prihatin';
+                    this.cloudAuthenticated = false;
+                    this.cloudAccessCode = '';
+                    this.cloudStatusMessage = '';
+                    this.cloudPendingProgress = null;
+                    if (this.cloudSyncTimer) clearTimeout(this.cloudSyncTimer);
+                    this.clearStudentProgress();
+                },
 
-    if (updateStorage) {
-        this.safeStorageSet('vraise_student_id', this.studentId);
-        this.safeStorageSet('vraise_student_name', this.studentName);
-        this.safeStorageSet('vraise_student_class', this.studentClass);
-    }
+                async fetchCloudProgress() {
+                    if (!this.isGoogleSheetConfigured()) throw new Error('Apps Script belum dikonfigurasi.');
+                    const url = new URL(this.googleScriptUrl);
+                    url.searchParams.set('action', 'progress');
+                    url.searchParams.set('studentId', this.studentId);
+                    url.searchParams.set('accessCode', String(this.cloudAccessCode || '').trim().toUpperCase());
+                    url.searchParams.set('_', Date.now().toString());
+                    const response = await fetch(url.toString(), {
+                        method: 'GET', redirect: 'follow', cache: 'no-store', referrerPolicy: 'no-referrer'
+                    });
+                    if (!response.ok) throw new Error('HTTP ' + response.status);
+                    const data = await response.json();
+                    if (!data.success) throw new Error(data.message || 'Kod akses tidak sah.');
+                    return data;
+                },
 
-    // Kosongkan progress murid sebelumnya
-    this.preTestAnswers = {};
-    this.preTestSubmitted = false;
-    this.preTestScore = 0;
+                async loadCloudProgress() {
+                    if (!this.studentId || !this.studentName) throw new Error('Pilih nama murid dahulu.');
+                    if (!String(this.cloudAccessCode || '').trim()) throw new Error('Masukkan kod akses murid.');
+                    this.cloudLoading = true;
+                    this.cloudStatusMessage = 'Memuatkan kemajuan daripada Google Sheets…';
+                    const requestedId = this.studentId;
+                    try {
+                        const data = await this.fetchCloudProgress();
+                        if (requestedId !== this.studentId) return false;
+                        this.cloudAuthenticated = true;
+                        this.cloudAccessCode = this.cloudAccessCode.trim().toUpperCase();
+                        try { sessionStorage.setItem('vraise_access_' + this.studentId, this.cloudAccessCode); } catch (_) {}
+                        this.safeStorageSet('vraise_student_id', this.studentId);
+                        this.safeStorageSet('vraise_student_name', this.studentName);
+                        this.safeStorageSet('vraise_student_class', this.studentClass);
+                        if (data.found && data.progress) {
+                            this.applyStudentProgress(data.progress);
+                            this.safeStorageSet('vraise_progress_' + this.studentId, JSON.stringify(data.progress));
+                            this.cloudStatusMessage = 'Kemajuan murid berjaya dipulihkan daripada Google Sheets.';
+                        } else {
+                            const local = this.safeStorageGet('vraise_progress_' + this.studentId);
+                            if (local) {
+                                try {
+                                    this.applyStudentProgress(JSON.parse(local));
+                                    this.saveProgress(); // migrasi rekod lama pada peranti ini
+                                    this.cloudStatusMessage = 'Kemajuan lama ditemui; sedang dipindahkan ke cloud.';
+                                } catch (_) { this.clearStudentProgress(); }
+                            } else {
+                                this.cloudStatusMessage = 'Murid baharu: tiada rekod cloud; sedia untuk mula.';
+                            }
+                        }
+                        this.syncStatus = 'Cloud disambungkan';
+                        return true;
+                    } catch (error) {
+                        this.cloudAuthenticated = false;
+                        this.syncStatus = 'Cloud belum disahkan';
+                        this.cloudStatusMessage = error.message || 'Gagal mengesahkan cloud.';
+                        throw error;
+                    } finally {
+                        this.cloudLoading = false;
+                    }
+                },
 
-    this.quizAnswers = {};
-    this.quizSubmitted = false;
-    this.quizScore = 0;
-
-    this.postTestAnswers = {};
-    this.postTestSubmitted = false;
-    this.postTestScore = 0;
-
-    this.vrExplored = false;
-    this.novaInteracted = false;
-    this.gameLevel = 1;
-
-    this.creationSubmitted = false;
-    this.reflectionAnswers = { q1: '', q2: '', q3: '' };
-    this.reflectionSaved = false;
-    this.missionCompleted = false;
-
-    // Ambil progress KHAS untuk murid yang dipilih
- const saved = this.safeStorageGet('vraise_progress_' + this.studentId);
-
-    if (saved) {
-        try {
-            const data = JSON.parse(saved);
-
-            this.preTestAnswers = data.preTestAnswers || {};
-            this.preTestSubmitted = Boolean(data.preTestSubmitted);
-            this.preTestScore = Number(data.preTestScore || 0);
-
-            this.quizAnswers = data.quizAnswers || {};
-            this.quizSubmitted = Boolean(data.quizSubmitted);
-            this.quizScore = Number(data.quizScore || 0);
-
-            this.postTestAnswers = data.postTestAnswers || {};
-            this.postTestSubmitted = Boolean(data.postTestSubmitted);
-            this.postTestScore = Number(data.postTestScore || 0);
-
-            this.vrExplored = Boolean(data.vrExplored);
-            this.novaInteracted = Boolean(data.novaInteracted);
-            this.gameLevel = Number(data.gameLevel || 1);
-
-            this.creationSubmitted =
-                Boolean(data.creationSubmitted);
-
-            this.reflectionAnswers =
-                data.reflectionAnswers ||
-                { q1: '', q2: '', q3: '' };
-
-            this.reflectionSaved =
-                Boolean(data.reflectionSaved);
-
-            this.missionCompleted =
-                Boolean(data.missionCompleted);
-
-        } catch (error) {
-            console.warn(
-                'VRAISE: progress murid tidak dapat dimuatkan.',
-                error
-            );
-        }
-    }
-},
-                saveStudentProfile() {
-                    this.selectStudentById();
-                    if (!String(this.studentId || '').trim() || !String(this.studentName || '').trim()) {
+                async saveStudentProfile() {
+                    if (!this.studentId || !this.studentName) {
                         alert('Sila pilih nama murid 5 Prihatin daripada senarai.');
                         return;
                     }
-                    this.studentClass = '5 Prihatin';
-                    this.safeStorageSet('vraise_student_id', this.studentId);
-                    this.safeStorageSet('vraise_student_name', this.studentName);
-                    this.safeStorageSet('vraise_student_class', this.studentClass);
-                    this.safeStorageSet('vraise_session_id', this.sessionId);
+                    try {
+                        if (!this.cloudAuthenticated) {
+                            const success = await this.loadCloudProgress();
+                            if (!success) return;
+                        }
+                    } catch (error) {
+                        alert('Profil belum dapat disahkan: ' + (error.message || error));
+                        return;
+                    }
                     const action = this.pendingAction;
                     const step = this.pendingMissionStep;
                     this.pendingAction = 'profile';
                     this.profileModalOpen = false;
-                    this.logAktiviti('PROFIL_MURID_DISIMPAN', { langkah: 0, catatan: 'Profil murid disimpan pada peranti.' });
+                    this.logAktiviti('PROFIL_MURID_DISIMPAN', { langkah: 0, catatan: 'Profil murid disahkan melalui kod akses.' });
                     if (action === 'mission') this.beginFeaturedMission(step);
                 },
 
                 resetForNewStudent() {
                     if (!confirm('Mulakan sesi untuk murid baharu? Kemajuan pada peranti ini akan dikosongkan. Data yang sudah dihantar ke Google Sheets tidak dipadam.')) return;
+                    try { sessionStorage.removeItem('vraise_access_' + this.studentId); } catch (_) {}
+                    this.cloudAuthenticated = false;
+                    this.cloudAccessCode = '';
+                    this.cloudStatusMessage = '';
+                    this.cloudPendingProgress = null;
+                    if (this.cloudSyncTimer) clearTimeout(this.cloudSyncTimer);
                     this.studentId = '';
                     this.studentName = '';
                     this.studentClass = '5 Prihatin';
@@ -1932,6 +1961,10 @@
                 },
 
                 async hantarKeGoogleSheet(data = {}) {
+                    if (!this.cloudAuthenticated || !this.cloudAccessCode) {
+                        this.syncStatus = 'Sila sahkan kod akses murid';
+                        return false;
+                    }
                     if (!this.isGoogleSheetConfigured()) {
                         this.syncStatus = 'Belum disambung';
                         return false;
@@ -1943,6 +1976,7 @@
 
     sessionId: data.sessionId || this.sessionId || this.generateSessionId(),
     studentId: data.studentId || this.studentId || '',
+    accessCode: this.cloudAccessCode,
     studentName: data.studentName || data.nama || this.studentName || '',
     nama: data.nama || data.studentName || this.studentName || '',
     kelas: data.kelas || this.studentClass || '',
@@ -1951,6 +1985,7 @@
     langkah: data.langkah ?? this.missionStep ?? '',
     skor: data.skor ?? '',
     jumlahSoalan: data.jumlahSoalan ?? '',
+    jumlah: data.jumlah ?? data.jumlahSoalan ?? '',
     nilai: data.nilai ?? '',
                         kemajuan: this.calculateMissionProgress(),
                         catatan: data.catatan || '',
@@ -1976,7 +2011,7 @@
                             keepalive: true
                         });
                         this.lastSyncAt = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                        this.syncStatus = 'Data dihantar';
+                        this.syncStatus = 'Permintaan aktiviti dihantar (belum disahkan)';
                         return true;
                     } catch (error) {
                         console.error('VRAISE: gagal menghantar data ke Google Sheets.', error);
@@ -2046,6 +2081,7 @@
                         app: 'VRAISE EduHub',
                         sessionId: this.sessionId || this.generateSessionId(),
                         studentId: this.studentId || '',
+                        accessCode: this.cloudAccessCode,
                         studentName: this.studentName || '',
                         nama: this.studentName || '',
                         kelas: this.studentClass || '5 Prihatin',
@@ -2110,6 +2146,10 @@
                 },
 
                 saveProgress() {
+                    if (!this.studentId || !this.cloudAuthenticated) {
+                        this.syncStatus = 'Sahkan kod akses untuk menyimpan kemajuan';
+                        return false;
+                    }
                     const data = {
                         preTestAnswers: this.preTestAnswers,
                         preTestSubmitted: this.preTestSubmitted,
@@ -2132,14 +2172,62 @@
                         reflectionSaved: this.reflectionSaved,
                         missionCompleted: this.missionCompleted
                     };
-this.safeStorageSet(
-  `vraise_progress_${this.studentId}`,
-  JSON.stringify(data)
-);
+                    const saveId = this.generateSessionId();
+                    this.safeStorageSet('vraise_progress_' + this.studentId, JSON.stringify(data));
+                    this.cloudPendingProgress = { studentId: this.studentId, accessCode: this.cloudAccessCode, progress: JSON.parse(JSON.stringify(data)), saveId };
+                    this.syncStatus = 'Disimpan pada peranti; menunggu cloud';
+                    this.scheduleCloudSync();
+                    return true;
                 },
+
+                scheduleCloudSync() {
+                    if (this.cloudSyncTimer) clearTimeout(this.cloudSyncTimer);
+                    this.cloudSyncTimer = setTimeout(() => this.flushCloudProgress(), 700);
+                },
+
+                async flushCloudProgress() {
+                    if (this.cloudSaving || !this.cloudPendingProgress) return;
+                    const snapshot = this.cloudPendingProgress;
+                    this.cloudPendingProgress = null;
+                    this.cloudSaving = true;
+                    try {
+                        // no-cors hanya mengesahkan penghantaran rangkaian, BUKAN simpanan server.
+                        await fetch(this.googleScriptUrl, {
+                            method: 'POST', mode: 'no-cors', redirect: 'follow',
+                            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                            body: JSON.stringify({ action: 'sync_progress', ...snapshot }),
+                            keepalive: true
+                        });
+                        // Sahkan secara berasingan dengan GET yang memerlukan kod akses.
+                        let verified = false;
+                        for (let attempt = 0; attempt < 3; attempt++) {
+                            await new Promise(resolve => setTimeout(resolve, 900));
+                            if (snapshot.studentId !== this.studentId) break;
+                            const result = await this.fetchCloudProgress();
+                            if (result.found && result.saveId === snapshot.saveId) {
+                                verified = true;
+                                break;
+                            }
+                        }
+                        if (snapshot.studentId === this.studentId) {
+                            this.syncStatus = verified
+                                ? 'Kemajuan disahkan dalam Google Sheets'
+                                : 'Cloud belum disahkan; rekod ada pada peranti';
+                        }
+                    } catch (error) {
+                        console.error('VRAISE Cloud Sync:', error);
+                        if (snapshot.studentId === this.studentId) {
+                            this.syncStatus = 'Gagal sync; rekod masih pada peranti';
+                        }
+                    } finally {
+                        this.cloudSaving = false;
+                        if (this.cloudPendingProgress) this.scheduleCloudSync();
+                    }
+                },
+
                 startFeaturedMission(step = 1) {
                     const normalizedStep = Math.min(9, Math.max(1, Number(step) || 1));
-                    if (!String(this.studentId || '').trim() || !String(this.studentName || '').trim()) {
+                    if (!String(this.studentId || '').trim() || !String(this.studentName || '').trim() || !this.cloudAuthenticated) {
                         this.openProfileModal('mission', normalizedStep);
                         return;
                     }
@@ -2186,6 +2274,11 @@ this.safeStorageSet(
                 },
 
                 submitPreTest() {
+                    if (!this.cloudAuthenticated) {
+                        alert('Sila sahkan profil dan kod akses murid dahulu.');
+                        this.openProfileModal('profile');
+                        return;
+                    }
                     if (!this.allQuestionsAnswered(this.preTestAnswers, this.preTestQuestions.length)) {
                         alert('Sila jawab kesemua 5 soalan Penilaian Pra sebelum menghantar.');
                         return;
@@ -2213,6 +2306,11 @@ this.safeStorageSet(
                 },
 
                 submitQuiz() {
+                    if (!this.cloudAuthenticated) {
+                        alert('Sila sahkan profil dan kod akses murid dahulu.');
+                        this.openProfileModal('profile');
+                        return;
+                    }
                     if (!this.allQuestionsAnswered(this.quizAnswers, this.quizQuestions.length)) {
                         alert('Sila jawab semua 5 soalan kuiz sebelum menghantar.');
                         return;
@@ -2224,16 +2322,21 @@ this.safeStorageSet(
                     this.quizScore = score;
                     this.quizSubmitted = true;
                     this.saveProgress();
-                    this.logAktiviti('KUIZ', {
-                        langkah: 5,
-                        skor,
+                    this.hantarKeGoogleSheet({
+                        action: 'assessment', aktiviti: 'KUIZ', langkah: 5,
+                        skor, jumlah: this.quizQuestions.length,
                         jumlahSoalan: this.quizQuestions.length,
                         nilai: `${score}/${this.quizQuestions.length}`,
-                        jawapan: JSON.stringify(this.quizAnswers)
+                        jawapan: this.quizAnswers
                     });
                 },
 
                 submitPostTest() {
+                    if (!this.cloudAuthenticated) {
+                        alert('Sila sahkan profil dan kod akses murid dahulu.');
+                        this.openProfileModal('profile');
+                        return;
+                    }
                     if (!this.allQuestionsAnswered(this.postTestAnswers, this.postTestQuestions.length)) {
                         alert('Sila jawab kesemua 5 soalan Penilaian Pasca sebelum menghantar.');
                         return;
@@ -2358,6 +2461,7 @@ this.hantarKeGoogleSheet({
                         app: 'VRAISE EduHub',
                         sessionId: this.sessionId || this.generateSessionId(),
                         studentId: this.studentId || '',
+                        accessCode: this.cloudAccessCode,
                         studentName: this.studentName || '',
                         nama: this.studentName || '',
                         kelas: this.studentClass || '5 Prihatin',
@@ -2384,7 +2488,7 @@ this.hantarKeGoogleSheet({
 
                 async submitCreation() {
                     if (this.creationUploading) return;
-                    if (!this.studentId || !this.studentName) { alert('Sila pilih profil murid dahulu.'); this.openProfileModal('profile'); return; }
+                    if (!this.studentId || !this.studentName || !this.cloudAuthenticated) { alert('Sila sahkan profil dan kod akses murid dahulu.'); this.openProfileModal('profile'); return; }
                     if (!this.creationTitle.trim()) { alert('Sila masukkan tajuk hasil kerja anda!'); return; }
 
                     const manualLink = String(this.creationLink || '').trim();
@@ -2414,6 +2518,11 @@ this.hantarKeGoogleSheet({
                 },
 
                 saveReflection() {
+                    if (!this.cloudAuthenticated) {
+                        alert('Sila sahkan profil dan kod akses murid dahulu.');
+                        this.openProfileModal('profile');
+                        return;
+                    }
                     const values = Object.values(this.reflectionAnswers).map(value => String(value || '').trim());
                     if (values.some(value => !value)) {
                         alert('Sila lengkapkan ketiga-tiga soalan refleksi sebelum menyimpan.');
@@ -2492,8 +2601,8 @@ this.hantarKeGoogleSheet({
                     const rawQuery = String(this.userQuery || '').trim();
                     if (!rawQuery || this.novaLoading) return;
 
-                    if (!this.studentId || !this.studentName) {
-                        alert('Sila pilih profil murid dahulu supaya interaksi NOVA boleh direkodkan dengan betul.');
+                    if (!this.studentId || !this.studentName || !this.cloudAuthenticated) {
+                        alert('Sila sahkan profil dan kod akses murid dahulu supaya interaksi NOVA boleh direkodkan.');
                         this.openProfileModal('profile');
                         return;
                     }
